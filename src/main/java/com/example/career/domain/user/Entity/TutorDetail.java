@@ -21,7 +21,7 @@ public class TutorDetail {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "tutor_id", referencedColumnName = "id")
     private User user;
-
+    
     @Column(columnDefinition = "VARCHAR(15)", nullable = false)
     private String major1;
 
