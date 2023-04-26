@@ -8,4 +8,5 @@ import java.util.List;
 @Repository
 public interface ConsultRepository extends JpaRepository<Consult, Long> {
     List<Consult> findAllByTutorId(Long tutorId);
+    List<Consult> findAllByTutorIdAndStatus(Long tutorId, int status);
 }

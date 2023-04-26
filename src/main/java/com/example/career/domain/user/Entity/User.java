@@ -1,5 +1,6 @@
 package com.example.career.domain.user.Entity;
 
+import com.example.career.domain.user.Dto.MenteeRespDto;
 import com.example.career.domain.user.Dto.MentorHomeRespDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -31,6 +32,7 @@ public class User
     @Column(columnDefinition = "VARCHAR(30)", nullable = false)
     private String username;
 
+    private int age;
     @Column(columnDefinition = "VARCHAR(30)", unique = true, nullable = false)
     private String nickname;
 
@@ -80,6 +82,16 @@ public class User
                 .profileImg(profileImg)
                 .build();
 
+    }
+    public MenteeRespDto toMenteeRespDto(){
+        return MenteeRespDto.builder()
+                .stuId(id)
+                .nickname(nickname)
+                .gender(gender)
+                .age(age)
+                .profileImg(profileImg)
+                .stuUrl("https://test.com")
+                .build();
     }
 
 //

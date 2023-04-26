@@ -1,4 +1,4 @@
-package com.example.career.domain.user.Entity;
+package com.example.career.domain.consult.Entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
