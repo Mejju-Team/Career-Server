@@ -1,19 +1,19 @@
 package com.example.career.domain.consult.Controller;
 
 import com.example.career.domain.consult.Dto.ConsultRespDto;
+import com.example.career.domain.consult.Dto.ConsultYesorNoReqDto;
 import com.example.career.domain.consult.Entity.Consult;
 import com.example.career.domain.consult.Repository.ConsultRepository;
 import com.example.career.domain.consult.Service.ConsultService;
 import com.example.career.global.valid.ValidCheck;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("consultation")
 public class ConsultController {
     private final ConsultRepository consultRepository;
     private final ConsultService consultService;
@@ -22,8 +22,12 @@ public class ConsultController {
     public List<Consult> consultTest(){
         return consultRepository.findAll();
     }
-    @GetMapping ("consultation/list")
+    @GetMapping ("list")
     public ValidCheck consultUpcoming(@RequestParam int status){
         return new ValidCheck(consultService.getList(10L, status));
+    }
+    @PatchMapping("request")
+    public ValidCheck consultAcception(@RequestParam int status, @RequestBody ConsultYesorNoReqDto consultYesorNoReqDto){
+        return new ValidCheck(consultService.requestConsult(consultYesorNoReqDto, status));
     }
 }

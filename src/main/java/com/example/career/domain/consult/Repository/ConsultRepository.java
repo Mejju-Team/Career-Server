@@ -9,4 +9,5 @@ import java.util.List;
 public interface ConsultRepository extends JpaRepository<Consult, Long> {
     List<Consult> findAllByTutorId(Long tutorId);
     List<Consult> findAllByTutorIdAndStatus(Long tutorId, int status);
+
 }

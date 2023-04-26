@@ -1,6 +1,8 @@
 package com.example.career.domain.consult.Service;
 
+import com.example.career.domain.consult.Dto.ConsultEachRespDto;
 import com.example.career.domain.consult.Dto.ConsultRespDto;
+import com.example.career.domain.consult.Dto.ConsultYesorNoReqDto;
 import com.example.career.domain.consult.Entity.Consult;
 import com.example.career.domain.consult.Repository.ConsultRepository;
 import com.example.career.domain.consult.Repository.QueryRepository;
@@ -11,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -43,4 +47,29 @@ public class ConsultServiceImpl implements ConsultService{
         return consultRespDto;
     }
 
+    @Override
+    public ConsultEachRespDto requestConsult(ConsultYesorNoReqDto consultYesorNoReqDto, int status) {
+        Consult consult;
+        try{
+            consult = consultRepository.findById(consultYesorNoReqDto.getConsultId()).get();
+
+        }catch(Exception e) {
+            return null;
+        }
+
+        if(status==1) { // 수락
+            consult.setStatus(1);
+            consult.setReason("");
+        }else if(status == 0){
+            consult.setStatus(4);
+            consult.setReason(consultYesorNoReqDto.getReason());
+        }else {
+            return null;
+        }
+
+        consultRepository.save(consult);
+
+        //Entity -> Save -> Dto
+        return consultRepository.save(consult).toConsultEachRespDto();
+    }
 }
