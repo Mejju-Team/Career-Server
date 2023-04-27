@@ -4,8 +4,11 @@ import com.example.career.domain.consult.Repository.ConsultRepository;
 import com.example.career.domain.user.Dto.MentorHomeRespDto;
 import com.example.career.domain.user.Dto.UserReqDto;
 import com.example.career.domain.user.Dto.SignUpReqDto;
+import com.example.career.domain.user.Entity.TutorDetail;
 import com.example.career.domain.user.Entity.User;
+import com.example.career.domain.user.Repository.TutorDetailRepository;
 import com.example.career.domain.user.Repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 import java.util.Arrays;
@@ -24,8 +27,11 @@ public class UserServiceImpl implements UserService{
         return userRepository.findByUsernameAndPassword(userReqDto.getUsername(), userReqDto.getPassword());
     }
     @Override
-    public User signUp(SignUpReqDto signUpReqDto) {
-        User user = signUpReqDto.toUserEntity();
+    @Transactional
+    public User signUp(TutorSignUpReqDto tutorSignUpReqDto) {
+        User user = tutorSignUpReqDto.toUserEntity();
+        TutorDetail tutorDetail = tutorSignUpReqDto.toTutorDetailEntity();
+        TutorDetailRepository.save(tutorDetail);
         return userRepository.save(user);
     }
     @Override
