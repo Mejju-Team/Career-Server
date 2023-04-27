@@ -1,4 +1,4 @@
-//package com.example.career.global.security;
+package com.example.career.global.security;//package com.example.career.global.security;
 //
 //import org.springframework.context.annotation.Bean;
 //import org.springframework.context.annotation.Configuration;

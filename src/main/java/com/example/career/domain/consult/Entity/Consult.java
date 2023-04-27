@@ -1,5 +1,6 @@
 package com.example.career.domain.consult.Entity;
 
+import com.example.career.domain.consult.Dto.ConsultEachRespDto;
 import com.example.career.domain.major.Entity.Major;
 import com.example.career.domain.user.Entity.StudentDetail;
 import com.example.career.domain.user.Entity.TutorDetail;
@@ -24,9 +25,9 @@ public class Consult {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "review_id", referencedColumnName = "id")
-    private Review review;
+//    @OneToOne
+//    @JoinColumn(name = "review_id", referencedColumnName = "id")
+    private Long reviewId;
 
     @Column(columnDefinition = "MEDIUMTEXT",nullable = false)
     private String contentsUrl;
@@ -36,18 +37,20 @@ public class Consult {
 
     @Column(nullable = false)
     private int status = 0;
+    @Column(columnDefinition = "TEXT")
+    private String reason;
 
-    @ManyToOne
-    @JoinColumn(name = "tutor_id", referencedColumnName = "tutor_id")
-    private TutorDetail tutorDetail;
+//    @ManyToOne
+//    @JoinColumn(name = "tutor_id", referencedColumnName = "tutor_id")
+    private Long tutorId;
 
-    @ManyToOne
-    @JoinColumn(name = "stu_id", referencedColumnName = "student_id")
-    private StudentDetail studentDetail;
+//    @ManyToOne
+//    @JoinColumn(name = "stu_id", referencedColumnName = "student_id")
+    private Long stuId;
 
-    @ManyToOne
-    @JoinColumn(name = "major_id", referencedColumnName = "id")
-    private Major major;
+//    @ManyToOne
+//    @JoinColumn(name = "major_id", referencedColumnName = "id")
+    private String major;
 
     private LocalDateTime studentEnter;
 
@@ -68,6 +71,27 @@ public class Consult {
     public void prePersist() {
         this.createAt = LocalDateTime.now();
         this.updateAt = this.createAt;
+    }
+    public ConsultEachRespDto toConsultEachRespDto(){
+        return ConsultEachRespDto.builder()
+                .id(id)
+                .reviewId(reviewId)
+                .contentsUrl(contentsUrl)
+                .zoomLink(zoomLink)
+                .reason(reason)
+                .status(status)
+                .tutorId(tutorId)
+                .stuId(stuId)
+                .major(major)
+                .studentEnter(studentEnter)
+                .studentLeft(studentLeft)
+                .tutorEnter(tutorEnter)
+                .tutorLeft(tutorLeft)
+                .startTime(startTime)
+                .endTime(endTime)
+                .createAt(createAt)
+                .updateAt(updateAt)
+                .build();
     }
 
 }

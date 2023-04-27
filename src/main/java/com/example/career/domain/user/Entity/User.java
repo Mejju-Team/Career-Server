@@ -1,5 +1,7 @@
 package com.example.career.domain.user.Entity;
 
+import com.example.career.domain.user.Dto.MenteeRespDto;
+import com.example.career.domain.user.Dto.MentorHomeRespDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,6 +32,7 @@ public class User
     @Column(columnDefinition = "VARCHAR(30)", nullable = false)
     private String username;
 
+    private int age;
     @Column(columnDefinition = "VARCHAR(30)", unique = true, nullable = false)
     private String nickname;
 
@@ -51,7 +54,7 @@ public class User
     @Column(nullable = false)
     private Boolean gender = true;
 
-    @Lob
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String profileImg;
 
     @Column(columnDefinition = "MEDIUMTEXT")
@@ -60,16 +63,35 @@ public class User
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private TutorDetail tutorDetail;
+//    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Long tutorDetail;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private StudentDetail studentDetail;
+//    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Long studentDetail;
 
     @PrePersist // 데이터 생성이 이루어질때 사전 작업
     public void prePersist() {
         this.createAt = LocalDateTime.now();
         this.updateAt = this.createAt;
+    }
+    public MentorHomeRespDto toHomeDto() {
+        return MentorHomeRespDto.builder().nickname(nickname)
+                .id(id)
+                .role(role)
+                .status(status)
+                .profileImg(profileImg)
+                .build();
+
+    }
+    public MenteeRespDto toMenteeRespDto(){
+        return MenteeRespDto.builder()
+                .stuId(id)
+                .nickname(nickname)
+                .gender(gender)
+                .age(age)
+                .profileImg(profileImg)
+                .stuUrl("https://test.com")
+                .build();
     }
 
 //
