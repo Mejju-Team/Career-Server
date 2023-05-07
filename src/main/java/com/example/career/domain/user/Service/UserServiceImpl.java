@@ -28,10 +28,10 @@ public class UserServiceImpl implements UserService{
     }
     @Override
     @Transactional
-    public User signUp(TutorSignUpReqDto tutorSignUpReqDto) {
+    public User signUp(SignUpReqDto tutorSignUpReqDto) {
         User user = tutorSignUpReqDto.toUserEntity();
-        TutorDetail tutorDetail = tutorSignUpReqDto.toTutorDetailEntity();
-        TutorDetailRepository.save(tutorDetail);
+//        TutorDetail tutorDetail = tutorSignUpReqDto.toTutorDetailEntity();
+//        TutorDetailRepository.save(tutorDetail);
         return userRepository.save(user);
     }
     @Override
