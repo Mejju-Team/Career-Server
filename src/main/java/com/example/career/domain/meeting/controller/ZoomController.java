@@ -1,10 +1,12 @@
 package com.example.career.domain.meeting.controller;
 
 import com.example.career.domain.meeting.EncodeUtil;
+import com.example.career.domain.meeting.service.ZoomMeetingServiceImpl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -17,7 +19,10 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 public class ZoomController {
+
+    private final ZoomMeetingServiceImpl zoomMeetingService;
     @Value("${zoom.secret-key}")
     private String secretKey;
 
@@ -52,10 +57,7 @@ public class ZoomController {
 
         List<Object> list = mapper.readValue(zoomText, new TypeReference<List<Object>>() {});
         System.out.println("response :: " + list);
-//        model.addAttribute("response", list.get(0));
-//
-//
-//        model.addAttribute("code", code);
+
         return list;
     }
 
@@ -63,5 +65,10 @@ public class ZoomController {
 //    public void createMeeting() {
 //        ZoomUser
 //    }
+
+    @GetMapping("zoom/test")
+    public void createMeeting(){
+        zoomMeetingService.createMeeting();
+    }
 
 }
