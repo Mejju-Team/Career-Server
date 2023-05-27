@@ -1,4 +1,4 @@
-package com.example.career.global.utils.meeting;
+package com.example.career.domain.meeting;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

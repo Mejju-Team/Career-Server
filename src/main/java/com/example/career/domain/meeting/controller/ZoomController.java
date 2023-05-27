@@ -1,6 +1,6 @@
-package com.example.career.global.utils.meeting;
+package com.example.career.domain.meeting.controller;
 
-import com.amazonaws.util.Base64;
+import com.example.career.domain.meeting.EncodeUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,11 +10,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -62,5 +58,10 @@ public class ZoomController {
 //        model.addAttribute("code", code);
         return list;
     }
+
+//    @PostMapping("_new/support/reservation/zoomApi/create")
+//    public void createMeeting() {
+//        ZoomUser
+//    }
 
 }
