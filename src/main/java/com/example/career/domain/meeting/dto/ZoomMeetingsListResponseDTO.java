@@ -1,11 +1,14 @@
 package com.example.career.domain.meeting.dto;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.List;
 
 @Data
+
 public class ZoomMeetingsListResponseDTO implements Serializable {
 
     private static final long serialVersionUID = -218290644483495371L;

@@ -1,6 +1,10 @@
 package com.example.career.domain.meeting.controller;
 
 import com.example.career.domain.meeting.EncodeUtil;
+import com.example.career.domain.meeting.dto.ZoomMeetingObjectDTO;
+import com.example.career.domain.meeting.dto.ZoomMeetingObjectEntity;
+import com.example.career.domain.meeting.dto.ZoomMeetingsListResponseDTO;
+import com.example.career.domain.meeting.repository.ZoomMeetingRepository;
 import com.example.career.domain.meeting.service.ZoomMeetingServiceImpl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -12,15 +16,25 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
 public class ZoomController {
+    private final ZoomMeetingRepository zoomMeetingRepository;
 
     private final ZoomMeetingServiceImpl zoomMeetingService;
     @Value("${zoom.secret-key}")
@@ -28,7 +42,7 @@ public class ZoomController {
 
 
     @RequestMapping(value="_new/support/reservation/zoomApi" , method = {RequestMethod.GET, RequestMethod.POST})
-    public List<Object> googleAsync(HttpServletRequest req, @RequestParam(required = false) String code) throws IOException, NoSuchAlgorithmException {
+    public ZoomMeetingObjectEntity googleAsync(HttpServletRequest req, @RequestParam(required = false) String code) throws IOException, NoSuchAlgorithmException {
 
         //Access token 을 받는 zoom api 호출 url
         String zoomUrl = "https://zoom.us/oauth/token";
@@ -55,20 +69,17 @@ public class ZoomController {
 
         mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 
-        List<Object> list = mapper.readValue(zoomText, new TypeReference<List<Object>>() {});
-        System.out.println("response :: " + list);
-
-        return list;
+        Map<String, String> list = mapper.readValue(zoomText, new TypeReference<>() {});
+        String accessToken = list.get("access_token");
+        System.out.println(accessToken);
+        return zoomMeetingRepository.save(zoomMeetingService.createMeeting(accessToken).toEntity());
     }
 
-//    @PostMapping("_new/support/reservation/zoomApi/create")
-//    public void createMeeting() {
-//        ZoomUser
-//    }
-
-    @GetMapping("zoom/test")
-    public void createMeeting(){
-        zoomMeetingService.createMeeting();
+    @GetMapping("zoom/list")
+    public List<ZoomMeetingObjectEntity> getList() {
+        return zoomMeetingRepository.findAll();
     }
+
+
 
 }

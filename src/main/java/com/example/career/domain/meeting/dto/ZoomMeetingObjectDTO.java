@@ -1,15 +1,23 @@
 package com.example.career.domain.meeting.dto;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.List;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ZoomMeetingObjectDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @Id
     private Long id;
 
     private String uuid;
@@ -48,7 +56,27 @@ public class ZoomMeetingObjectDTO implements Serializable {
 
     private ZoomMeetingRecurrenceDTO recurrence;
 
-    private List<ZoomMeetingTrackingFieldsDTO> tracking_fields;
-
     private ZoomMeetingSettingsDTO settings;
+
+    public ZoomMeetingObjectEntity toEntity() {
+        return ZoomMeetingObjectEntity.builder()
+                .id(id)
+                .agenda(agenda)
+                .assistant_id(assistant_id)
+                .created_at(created_at)
+                .duration(duration)
+                .h323_password(h323_password)
+                .host_email(host_email)
+                .join_url(join_url)
+                .password(password)
+                .registration_url(registration_url)
+                .schedule_for(schedule_for)
+                .start_time(start_time)
+                .start_url(start_url)
+                .timezone(timezone)
+                .topic(topic)
+                .type(type)
+                .build();
+    }
+
 }
