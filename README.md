@@ -7,7 +7,9 @@
 
 ### 실행방법
 `CareerApplication.java` 를 찾아서 우측상단 Run 버튼 클릭
+
 <img width="463" alt="image" src="https://github.com/Carry-A-Way/Career-Server/assets/92903481/55774e43-7d67-4a65-93bb-f4d5b2c61137">
+
 
 ### 실행이 안될 때 해결방법
 1. `build.gradle` 찾아서 Reload 해주기
