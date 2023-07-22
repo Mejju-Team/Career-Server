@@ -6,6 +6,8 @@ import com.example.career.domain.user.Dto.UserReqDto;
 import com.example.career.domain.user.Dto.SignUpReqDto;
 import com.example.career.domain.user.Entity.TutorDetail;
 import com.example.career.domain.user.Entity.User;
+import com.example.career.domain.user.Exception.PasswordWrongException;
+import com.example.career.domain.user.Exception.UsernameWrongException;
 import com.example.career.domain.user.Repository.TutorDetailRepository;
 import com.example.career.domain.user.Repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -15,20 +17,32 @@ import java.util.Arrays;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
+    PasswordEncoder passwordEncoder;
     private final ConsultRepository consultRepository;
     @Override
     public User signIn(UserReqDto userReqDto) {
-        return userRepository.findByUsernameAndPassword(userReqDto.getUsername(), userReqDto.getPassword());
+        String username = userReqDto.getUsername();
+        String passwd = userReqDto.getPassword();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameWrongException(username));
+
+        if (!passwordEncoder.matches(passwd, user.getPassword())) {
+            throw new PasswordWrongException();
+        }
+        return user;
     }
     @Override
     @Transactional
     public User signUp(SignUpReqDto tutorSignUpReqDto) {
+        String passwd = tutorSignUpReqDto.getPassword();
+        tutorSignUpReqDto.setPassword(passwordEncoder.encode(passwd));
         User user = tutorSignUpReqDto.toUserEntity();
 //        TutorDetail tutorDetail = tutorSignUpReqDto.toTutorDetailEntity();
 //        TutorDetailRepository.save(tutorDetail);
