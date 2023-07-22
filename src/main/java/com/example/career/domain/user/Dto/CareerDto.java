@@ -7,12 +7,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class School {
-    private Long id; // 경력 갯수 id
-    private String school; // 고등, 대학
-    private String schoolName;
+public class CareerDto {
+    private Long idx;
+    private String careerType;
+    private String careerName;
     private String startDate;
     private String endDate;
-    private String state; // 졸업, 졸업예정 등
-
+    private String state;
+    private String content;
 }

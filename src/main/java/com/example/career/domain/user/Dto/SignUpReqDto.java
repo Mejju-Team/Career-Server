@@ -1,12 +1,10 @@
 package com.example.career.domain.user.Dto;
 
-import com.example.career.domain.user.Entity.TutorDetail;
 import com.example.career.domain.user.Entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -39,11 +37,11 @@ public class SignUpReqDto {
 
     private String hobby;
 
-    private List<School> schoolList;
+    private List<SchoolDto> schoolList;
 
-    private List<Career> careerList;
+    private List<CareerDto> careerList;
 
-    private List<Tag> tagList;
+    private List<TagDto> tagList;
 
     private List<String> activeImg;
 
