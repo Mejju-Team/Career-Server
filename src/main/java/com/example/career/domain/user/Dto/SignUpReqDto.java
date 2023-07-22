@@ -7,6 +7,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 
 @Data
 @AllArgsConstructor
@@ -21,6 +24,8 @@ public class SignUpReqDto {
     private String password;
     private Boolean gender;
     private String nickname;
+    private Integer age;
+    private Set<AuthorityDto> authorityDtoSet;
 
 
     public User toUserEntity(){
@@ -30,10 +35,28 @@ public class SignUpReqDto {
                 .password(password)
                 .telephone(telephone)
                 .gender(gender)
+                .age(age)
                 .role(role)
                 .status(0)
                 .introduce(introduce)
                 .authType(1)
+                .build();
+    }
+
+    public static SignUpReqDto from(User user) {
+        if(user == null) return null;
+
+        return SignUpReqDto.builder()
+                .name(user.getName())
+                .username(user.getUsername())
+                .nickname(user.getNickname())
+                .password(user.getPassword())
+                .gender(user.getGender())
+                .age(user.getAge())
+                .telephone(user.getTelephone())
+                .authorityDtoSet(user.getAuthorities().stream()
+                        .map(authority -> AuthorityDto.builder().authorityName(authority.getAuthorityName()).build())
+                        .collect(Collectors.toSet()))
                 .build();
     }
 }
