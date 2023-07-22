@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Tag {
-    private Long id;
+public class TagDto {
+    private Long idx;
     private String name;
 }
