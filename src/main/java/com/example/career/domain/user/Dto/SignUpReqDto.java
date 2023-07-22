@@ -39,7 +39,7 @@ public class SignUpReqDto {
 
     private String hobby;
 
-    private List<School> shoolList;
+    private List<School> schoolList;
 
     private List<Career> careerList;
 
