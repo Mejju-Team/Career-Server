@@ -33,6 +33,7 @@ public class User
     @Column(columnDefinition = "VARCHAR(30)", nullable = false)
     private String username;
 
+    @Column(nullable = false)
     private int age;
     @Column(columnDefinition = "VARCHAR(30)", unique = true, nullable = false)
     private String nickname;

@@ -24,6 +24,7 @@ public class SignUpReqDto {
     private String password;
     private Boolean gender;
     private String nickname;
+    private Integer age;
     private Set<AuthorityDto> authorityDtoSet;
 
 
@@ -34,6 +35,7 @@ public class SignUpReqDto {
                 .password(password)
                 .telephone(telephone)
                 .gender(gender)
+                .age(age)
                 .role(role)
                 .status(0)
                 .introduce(introduce)
@@ -45,10 +47,12 @@ public class SignUpReqDto {
         if(user == null) return null;
 
         return SignUpReqDto.builder()
+                .name(user.getName())
                 .username(user.getUsername())
                 .nickname(user.getNickname())
                 .password(user.getPassword())
                 .gender(user.getGender())
+                .age(user.getAge())
                 .telephone(user.getTelephone())
                 .authorityDtoSet(user.getAuthorities().stream()
                         .map(authority -> AuthorityDto.builder().authorityName(authority.getAuthorityName()).build())
