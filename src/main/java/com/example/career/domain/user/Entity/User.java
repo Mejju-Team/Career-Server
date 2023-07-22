@@ -34,7 +34,7 @@ public class User
     private String username;
 
     @Column(nullable = false)
-    private int age;
+    private String birth;
     @Column(columnDefinition = "VARCHAR(30)", unique = true, nullable = false)
     private String nickname;
 
@@ -101,7 +101,7 @@ public class User
                 .stuId(id)
                 .nickname(nickname)
                 .gender(gender)
-                .age(age)
+                .birth(birth)
                 .profileImg(profileImg)
                 .stuUrl("https://test.com")
                 .build();

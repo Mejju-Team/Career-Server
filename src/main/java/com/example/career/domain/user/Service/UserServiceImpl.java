@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService{
                 .password(passwordEncoder.encode(userDto.getPassword()))
                 .nickname(userDto.getNickname())
                 .gender(userDto.getGender())
-                .age(userDto.getAge())
+                .birth(userDto.getBirth())
                 .authorities(Collections.singleton(authority))
                 .activated(true)
                 .build();

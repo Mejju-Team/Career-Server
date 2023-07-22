@@ -28,6 +28,7 @@ public class SignUpReqDto {
     private Boolean gender; //
     private String nickname;//
     private String birth;
+    private Set<AuthorityDto> authorityDtoSet;
 
     private String profileImg; // MultipartFile
     private String consultMajor1;
@@ -53,7 +54,7 @@ public class SignUpReqDto {
                 .password(password)
                 .telephone(telephone)
                 .gender(gender)
-                //.age(age)
+                .birth(birth)
                 .role(role)
                 .status(0)
                 .introduce(introduce)
@@ -70,7 +71,7 @@ public class SignUpReqDto {
                 .nickname(user.getNickname())
                 .password(user.getPassword())
                 .gender(user.getGender())
-                .age(user.getAge())
+                .birth(user.getBirth())
                 .telephone(user.getTelephone())
                 .authorityDtoSet(user.getAuthorities().stream()
                         .map(authority -> AuthorityDto.builder().authorityName(authority.getAuthorityName()).build())

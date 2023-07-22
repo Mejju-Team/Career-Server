@@ -39,12 +39,9 @@ public class UserController {
         //S3 이미지 저장
         //School, Career, Tag List -> table 저장 -> id
         return "test";
-//
-//        return validCheck;
+    }
     @PostMapping("/signup")
-    public ResponseEntity<SignUpReqDto> signup(
-            @Valid @RequestBody SignUpReqDto userDto
-    ) {
+    public ResponseEntity<SignUpReqDto> signup(@Valid @RequestBody SignUpReqDto userDto) {
         return ResponseEntity.ok(userService.signup(userDto));
     }
 

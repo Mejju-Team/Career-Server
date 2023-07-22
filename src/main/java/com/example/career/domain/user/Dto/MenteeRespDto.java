@@ -13,7 +13,7 @@ public class MenteeRespDto {
     private Long stuId;
     private String nickname;
     private boolean gender;
-    private int age;
+    private String birth;
     private String profileImg;
     private String stuUrl;
 }
