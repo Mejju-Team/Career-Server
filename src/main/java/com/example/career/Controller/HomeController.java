@@ -1,22 +1,24 @@
 package com.example.career.Controller;
 
-import com.example.career.domain.user.Entity.TestEntity;
-import com.example.career.domain.user.Entity.User;
-import com.example.career.domain.user.Repository.UserRepository;
-import com.example.career.global.valid.ValidCheck;
-import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 @RestController
 @RequiredArgsConstructor
 
 public class HomeController {
+    @GetMapping("test")
+    public TestDTO conntectTest() {
+        return new TestDTO();
+    }
 
-
-
+}
+@Data
+class TestDTO {
+    private int code = 400;
 }
