@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("user")
 @AllArgsConstructor
@@ -33,11 +35,15 @@ public class UserController {
     // 회원가입 버튼
     // TODO : jwt token
     @PostMapping("signup/mentor")
-    public String signUp(@RequestBody SignUpReqDto user) {
+    public String signUp(@RequestBody SignUpReqDto user) throws IOException {
         System.out.println(user);
+        userService.uploadProfile(user.getProfileImg());
 //        userService.signUp(signUpReqDto);
         //S3 이미지 저장
         //School, Career, Tag List -> table 저장 -> id
+
+
+
         return "test";
     }
     @PostMapping("/signup")
