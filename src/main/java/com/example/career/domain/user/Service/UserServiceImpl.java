@@ -61,16 +61,7 @@ public class UserServiceImpl implements UserService{
                 .authorityName("ROLE_USER")
                 .build();
 
-        User user = User.builder()
-                .name(userDto.getName())
-                .username(userDto.getUsername())
-                .password(passwordEncoder.encode(userDto.getPassword()))
-                .nickname(userDto.getNickname())
-                .gender(userDto.getGender())
-                .birth(userDto.getBirth())
-                .authorities(Collections.singleton(authority))
-                .activated(true)
-                .build();
+        User user = userDto.toUserEntityWithEncrypt(passwordEncoder);
 
         return SignUpReqDto.from(userRepository.save(user));
     }

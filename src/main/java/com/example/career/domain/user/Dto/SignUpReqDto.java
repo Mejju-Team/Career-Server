@@ -1,11 +1,16 @@
 package com.example.career.domain.user.Dto;
 
+import com.example.career.domain.user.Entity.Authority;
 import com.example.career.domain.user.Entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Collections;
 import java.util.List;
 
 import java.util.Set;
@@ -45,8 +50,15 @@ public class SignUpReqDto {
 
     private List<String> activeImg;
 
-    public User toUserEntity(){
-        return User.builder().name(name)
+
+    public User toUserEntityWithEncrypt(PasswordEncoder passwordEncoder){
+        Authority authority = Authority.builder()
+                .authorityName("ROLE_USER")
+                .build();
+
+        return User.builder()
+                .password(passwordEncoder.encode(password))
+                .name(name)
                 .username(username)
                 .nickname(nickname)
                 .password(password)
@@ -57,6 +69,8 @@ public class SignUpReqDto {
                 .status(0)
                 .introduce(introduce)
                 .authType(1)
+                .authorities(Collections.singleton(authority))
+                .activated(true)
                 .build();
     }
 
