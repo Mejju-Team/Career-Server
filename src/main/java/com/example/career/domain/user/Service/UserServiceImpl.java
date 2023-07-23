@@ -17,6 +17,7 @@ import com.example.career.domain.user.Util.SecurityUtil;
 import lombok.AllArgsConstructor;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -57,11 +58,13 @@ public class UserServiceImpl implements UserService{
             throw new DuplicateMemberException("이미 가입되어 있는 유저입니다.");
         }
 
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+
         Authority authority = Authority.builder()
                 .authorityName("ROLE_USER")
                 .build();
 
-        User user = userDto.toUserEntityWithEncrypt(passwordEncoder);
+        User user = userDto.toUserEntity(Collections.singleton(authority));
 
         return SignUpReqDto.from(userRepository.save(user));
     }

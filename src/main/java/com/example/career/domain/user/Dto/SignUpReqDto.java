@@ -51,17 +51,13 @@ public class SignUpReqDto {
     private List<String> activeImg;
 
 
-    public User toUserEntityWithEncrypt(PasswordEncoder passwordEncoder){
-        Authority authority = Authority.builder()
-                .authorityName("ROLE_USER")
-                .build();
+    public User toUserEntity(Set<Authority> authorities){
 
         return User.builder()
-                .password(passwordEncoder.encode(password))
+                .password(password)
                 .name(name)
                 .username(username)
                 .nickname(nickname)
-                .password(password)
                 .telephone(telephone)
                 .gender(gender)
                 .birth(birth)
@@ -69,7 +65,7 @@ public class SignUpReqDto {
                 .status(0)
                 .introduce(introduce)
                 .authType(1)
-                .authorities(Collections.singleton(authority))
+                .authorities(authorities)
                 .activated(true)
                 .build();
     }
