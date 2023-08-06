@@ -13,6 +13,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
 
 import java.io.IOException;
 
@@ -97,5 +101,20 @@ public class UserController {
 
         return null;
     }
+    // 프로필 이미지
+    @PostMapping("file/profile")
+    public String uploadProfileImage(@RequestParam("image") MultipartFile multipartFile) throws IOException {
+        return userService.uploadProfile(multipartFile);
+    }
+    // 엑티브 이미지 여러장
+    @PostMapping("file/active")
+    public List<String> uploadActiveImages(@RequestParam("images") List<MultipartFile> multipartFiles) throws IOException {
+        return userService.uploadActiceImages(multipartFiles);
+    }
+    @GetMapping("file/test")
+    public String test()  {
+        return "test";
+    }
+
 
 }
