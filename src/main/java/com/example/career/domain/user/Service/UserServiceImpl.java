@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService{
     private final SchoolRepository schoolRepository;
     private final TagRepository tagRepository;
     private final CareerRepository careerRepository;
-    PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final ConsultRepository consultRepository;
     private final S3Uploader s3Uploader;
     @Override
