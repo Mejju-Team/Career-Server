@@ -1,13 +1,8 @@
 package com.example.career.domain.user.Service;
 
 import com.example.career.domain.consult.Repository.ConsultRepository;
-import com.example.career.domain.user.Dto.MentorHomeRespDto;
-import com.example.career.domain.user.Dto.UserReqDto;
-import com.example.career.domain.user.Dto.SignUpReqDto;
-import com.example.career.domain.user.Entity.Authority;
-import com.example.career.domain.user.Entity.Tag;
-import com.example.career.domain.user.Entity.TutorDetail;
-import com.example.career.domain.user.Entity.User;
+import com.example.career.domain.user.Dto.*;
+import com.example.career.domain.user.Entity.*;
 import com.example.career.domain.user.Exception.DuplicateMemberException;
 import com.example.career.domain.user.Exception.NotFoundMemberException;
 import com.example.career.domain.user.Exception.PasswordWrongException;
@@ -22,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,6 +50,9 @@ public class UserServiceImpl implements UserService{
 //        User user = signUpReqDto.toUserEntity();
 //        return userRepository.save(user);
 //    }
+
+
+
     @Transactional
     @Override
     public SignUpReqDto signup(SignUpReqDto userDto) {
@@ -68,8 +67,15 @@ public class UserServiceImpl implements UserService{
                 .build();
 
         User user = userDto.toUserEntity(Collections.singleton(authority));
+        user = userRepository.save(user);
 
-        return SignUpReqDto.from(userRepository.save(user));
+        Long id = user.getId();
+
+        EntityUtils.saveEntities(userDto.getSchoolList(), id, schoolRepository, SchoolDto::toSchoolEntity);
+        EntityUtils.saveEntities(userDto.getCareerList(), id, careerRepository, CareerDto::toCareerEntity);
+        EntityUtils.saveEntities(userDto.getTagList(), id, tagRepository, TagDto::toTagEntity);
+
+        return SignUpReqDto.from(user);
     }
     @Transactional(readOnly = true)
     @Override
