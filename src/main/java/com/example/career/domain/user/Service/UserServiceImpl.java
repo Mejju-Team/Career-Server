@@ -5,14 +5,14 @@ import com.example.career.domain.user.Dto.MentorHomeRespDto;
 import com.example.career.domain.user.Dto.UserReqDto;
 import com.example.career.domain.user.Dto.SignUpReqDto;
 import com.example.career.domain.user.Entity.Authority;
+import com.example.career.domain.user.Entity.Tag;
 import com.example.career.domain.user.Entity.TutorDetail;
 import com.example.career.domain.user.Entity.User;
 import com.example.career.domain.user.Exception.DuplicateMemberException;
 import com.example.career.domain.user.Exception.NotFoundMemberException;
 import com.example.career.domain.user.Exception.PasswordWrongException;
 import com.example.career.domain.user.Exception.UsernameWrongException;
-import com.example.career.domain.user.Repository.TutorDetailRepository;
-import com.example.career.domain.user.Repository.UserRepository;
+import com.example.career.domain.user.Repository.*;
 import com.example.career.domain.user.Util.SecurityUtil;
 import lombok.AllArgsConstructor;
 
@@ -30,6 +30,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
+    private final SchoolRepository schoolRepository;
+    private final TagRepository tagRepository;
+    private final CareerRepository careerRepository;
     PasswordEncoder passwordEncoder;
     private final ConsultRepository consultRepository;
     @Override
