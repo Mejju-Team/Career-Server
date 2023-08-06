@@ -1,28 +1,25 @@
 package com.example.career.domain.user.Service;
 
 import com.example.career.domain.consult.Repository.ConsultRepository;
-import com.example.career.domain.user.Dto.MentorHomeRespDto;
-import com.example.career.domain.user.Dto.UserReqDto;
-import com.example.career.domain.user.Dto.SignUpReqDto;
-import com.example.career.domain.user.Entity.Authority;
-import com.example.career.domain.user.Entity.TutorDetail;
-import com.example.career.domain.user.Entity.User;
+import com.example.career.domain.user.Dto.*;
+import com.example.career.domain.user.Entity.*;
 import com.example.career.domain.user.Exception.DuplicateMemberException;
 import com.example.career.domain.user.Exception.NotFoundMemberException;
 import com.example.career.domain.user.Exception.PasswordWrongException;
 import com.example.career.domain.user.Exception.UsernameWrongException;
-import com.example.career.domain.user.Repository.TutorDetailRepository;
-import com.example.career.domain.user.Repository.UserRepository;
+import com.example.career.domain.user.Repository.*;
 import com.example.career.domain.user.Util.SecurityUtil;
 import com.example.career.global.utils.S3Uploader;
 import lombok.AllArgsConstructor;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +29,9 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
+    private final SchoolRepository schoolRepository;
+    private final TagRepository tagRepository;
+    private final CareerRepository careerRepository;
     PasswordEncoder passwordEncoder;
     private final ConsultRepository consultRepository;
     private final S3Uploader s3Uploader;
@@ -54,6 +54,9 @@ public class UserServiceImpl implements UserService{
 //        User user = signUpReqDto.toUserEntity();
 //        return userRepository.save(user);
 //    }
+
+
+
     @Transactional
     @Override
     public SignUpReqDto signup(SignUpReqDto userDto) {
@@ -61,22 +64,22 @@ public class UserServiceImpl implements UserService{
             throw new DuplicateMemberException("이미 가입되어 있는 유저입니다.");
         }
 
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+
         Authority authority = Authority.builder()
                 .authorityName("ROLE_USER")
                 .build();
 
-        User user = User.builder()
-                .name(userDto.getName())
-                .username(userDto.getUsername())
-                .password(passwordEncoder.encode(userDto.getPassword()))
-                .nickname(userDto.getNickname())
-                .gender(userDto.getGender())
-                .birth(userDto.getBirth())
-                .authorities(Collections.singleton(authority))
-                .activated(true)
-                .build();
+        User user = userDto.toUserEntity(Collections.singleton(authority));
+        user = userRepository.save(user);
 
-        return SignUpReqDto.from(userRepository.save(user));
+        Long id = user.getId();
+
+        EntityUtils.saveEntities(userDto.getSchoolList(), id, schoolRepository, SchoolDto::toSchoolEntity);
+        EntityUtils.saveEntities(userDto.getCareerList(), id, careerRepository, CareerDto::toCareerEntity);
+        EntityUtils.saveEntities(userDto.getTagList(), id, tagRepository, TagDto::toTagEntity);
+
+        return SignUpReqDto.from(user);
     }
     @Transactional(readOnly = true)
     @Override

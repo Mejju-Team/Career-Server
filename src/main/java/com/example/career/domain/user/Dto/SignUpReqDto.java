@@ -1,11 +1,14 @@
 package com.example.career.domain.user.Dto;
 
+import com.example.career.domain.user.Entity.Authority;
 import com.example.career.domain.user.Entity.User;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
 import java.util.List;
 
 import java.util.Set;
@@ -16,6 +19,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Getter
 public class SignUpReqDto {
     private String name; //
     private String username; //
@@ -45,11 +49,14 @@ public class SignUpReqDto {
 
     private List<MultipartFile> activeImg;
 
-    public User toUserEntity(){
-        return User.builder().name(name)
+
+    public User toUserEntity(Set<Authority> authorities){
+
+        return User.builder()
+                .password(password)
+                .name(name)
                 .username(username)
                 .nickname(nickname)
-                .password(password)
                 .telephone(telephone)
                 .gender(gender)
                 .birth(birth)
@@ -57,6 +64,8 @@ public class SignUpReqDto {
                 .status(0)
                 .introduce(introduce)
                 .authType(1)
+                .authorities(authorities)
+                .activated(true)
                 .build();
     }
 
