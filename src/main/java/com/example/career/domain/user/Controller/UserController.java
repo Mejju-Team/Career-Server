@@ -104,7 +104,11 @@ public class UserController {
     public String uploadProfileImage(@RequestParam("image") MultipartFile multipartFile) throws IOException {
         return userService.uploadProfile(multipartFile);
     }
-
+    // 엑티브 이미지 여러장
+    @PostMapping("file/active")
+    public List<String> uploadActiveImages(@RequestParam("images") List<MultipartFile> multipartFiles) throws IOException {
+        return userService.uploadActiceImages(multipartFiles);
+    }
     @GetMapping("file/test")
     public String test()  {
         return "test";
