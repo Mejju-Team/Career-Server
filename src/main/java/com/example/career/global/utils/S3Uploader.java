@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,12 +28,14 @@ public class S3Uploader {
     public String bucket;
 
     //List 로 받을 경우
-//    public String upload(List<MultipartFile> multipartFiles, String dirName) throws IOException{
-//
-//        File uploadFile = convert(multipartFile).orElseThrow(() -> new IllegalArgumentException("파일 전환 실패"));
-//
-//        return upload(uploadFile, dirName);
-//    }
+    public List<String> upload(List<MultipartFile> multipartFiles, String dirName) throws IOException{
+        List<String> urlList = new ArrayList<>();
+        for(MultipartFile multipartFile : multipartFiles) {
+            File uploadFile = convert(multipartFile).orElseThrow(() -> new IllegalArgumentException("파일 전환 실패"));
+            urlList.add(upload(uploadFile, dirName));
+        }
+        return urlList;
+    }
 
     public String upload(MultipartFile multipartFile, String dirName) throws IOException{
         File uploadFile = convert(multipartFile).orElseThrow(() -> new IllegalArgumentException("파일 전환 실패"));

@@ -9,8 +9,10 @@ import com.example.career.domain.user.Exception.PasswordWrongException;
 import com.example.career.domain.user.Exception.UsernameWrongException;
 import com.example.career.domain.user.Repository.*;
 import com.example.career.domain.user.Util.SecurityUtil;
+import com.example.career.global.utils.S3Uploader;
 import lombok.AllArgsConstructor;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -21,6 +23,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +34,7 @@ public class UserServiceImpl implements UserService{
     private final CareerRepository careerRepository;
     PasswordEncoder passwordEncoder;
     private final ConsultRepository consultRepository;
+    private final S3Uploader s3Uploader;
     @Override
     public User signIn(UserReqDto userReqDto) {
         String username = userReqDto.getUsername();
@@ -92,6 +96,23 @@ public class UserServiceImpl implements UserService{
                         .orElseThrow(() -> new NotFoundMemberException("Member not found"))
         );
     }
+
+    @Override
+    public String uploadProfile(MultipartFile multipartFile) throws IOException {
+        String url = s3Uploader.upload(multipartFile, "static/profile");
+        System.out.println(url);
+        return url;
+    }
+
+    @Override
+    public List<String> uploadActiceImages(List<MultipartFile> MultipartFile) throws IOException {
+        List<String> urlList = s3Uploader.upload(MultipartFile, "static/active");
+        for (int i=0; i< urlList.size(); i++) {
+            System.out.println(urlList);
+        }
+        return urlList;
+    }
+
     @Override
     public boolean validUsername(String username) {
 

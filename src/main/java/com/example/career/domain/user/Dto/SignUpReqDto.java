@@ -6,6 +6,7 @@ import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collections;
 import java.util.List;
@@ -31,7 +32,7 @@ public class SignUpReqDto {
     private String birth;
     private Set<AuthorityDto> authorityDtoSet;
 
-    private String profileImg; // MultipartFile
+    private MultipartFile profileImg; // MultipartFile
     private String consultMajor1;
     private String consultMajor2;
     private String consultMajor3;
@@ -46,7 +47,7 @@ public class SignUpReqDto {
 
     private List<TagDto> tagList;
 
-    private List<String> activeImg;
+    private List<MultipartFile> activeImg;
 
 
     public User toUserEntity(Set<Authority> authorities){
