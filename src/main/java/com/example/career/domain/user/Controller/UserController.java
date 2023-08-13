@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,6 +39,7 @@ public class UserController {
 
     // 회원가입 버튼
     // TODO : jwt token
+    @Transactional
     @PostMapping("signup/mentor")
     public ResponseEntity<SignUpReqDto> signUp(@RequestBody SignUpReqDto user) throws IOException {
         return ResponseEntity.ok(userService.signup(user));
