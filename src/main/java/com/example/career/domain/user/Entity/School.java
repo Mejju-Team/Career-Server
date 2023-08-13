@@ -18,6 +18,11 @@ import java.util.Date;
 @Table(name = "School")
 public class School {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
+    @Column(nullable = false)
     private Long tutor_id;
 
     @Column(nullable = false)
@@ -29,7 +34,7 @@ public class School {
     @Column(columnDefinition = "VARCHAR(30)")
     private String schoolName;
 
-    @Column(columnDefinition = "VARCHAR(00)")
+    @Column(columnDefinition = "VARCHAR(10)")
     private String startDate;
 
     @Column(columnDefinition = "VARCHAR(10)")
