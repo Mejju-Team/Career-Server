@@ -54,6 +54,7 @@ public class UserController {
 
         String url = userService.uploadProfile(multipartFile);
         user.setProfileImg(url);
+
         return ResponseEntity.ok(userService.signup(user));
     }
     @PostMapping("/signup")
