@@ -47,7 +47,6 @@ public class Consult {
 //    @ManyToOne
 //    @JoinColumn(name = "stu_id", referencedColumnName = "student_id")
     private Long stuId;
-    private Long queryId;
 
 //    @ManyToOne
 //    @JoinColumn(name = "major_id", referencedColumnName = "id")
