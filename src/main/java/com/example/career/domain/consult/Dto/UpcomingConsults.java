@@ -11,19 +11,18 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class LastUpcomingConsult {
+public class UpcomingConsults {
     private Long consultId;
-    private Long reviewId;
     private String contentsUrl;
     private String zoomLink;
-    private int status = 0;
+    private int status;
     private String reason;
 
-    private Long tutorId;
-
-    private Long stuId;
-
     private String major;
+    // 학생의 질문들
+    private QueryRespDto studentRequest;
+    // 학생 정보
+    private ConsultMenteeRespDto student;
 
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
