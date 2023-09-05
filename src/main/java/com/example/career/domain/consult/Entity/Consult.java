@@ -1,6 +1,9 @@
 package com.example.career.domain.consult.Entity;
 
 import com.example.career.domain.consult.Dto.ConsultEachRespDto;
+import com.example.career.domain.consult.Dto.LastUpcomingConsult;
+import com.example.career.domain.consult.Dto.PreviousConsult;
+import com.example.career.domain.consult.Dto.UpcomingConsults;
 import com.example.career.domain.major.Entity.Major;
 import com.example.career.domain.user.Entity.StudentDetail;
 import com.example.career.domain.user.Entity.TutorDetail;
@@ -90,6 +93,42 @@ public class Consult {
                 .tutorLeft(tutorLeft)
                 .startTime(startTime)
                 .endTime(endTime)
+                .createAt(createAt)
+                .updateAt(updateAt)
+                .build();
+    }
+    public LastUpcomingConsult toLastUpcomingConsult(){
+        return LastUpcomingConsult.builder()
+                .consultId(id)
+                .contentsUrl(contentsUrl)
+                .zoomLink(zoomLink)
+                .reason(reason)
+                .status(status)
+                .major(major)
+                .createAt(createAt)
+                .updateAt(updateAt)
+                .build();
+    }
+    public UpcomingConsults toUpcomingConsult(){
+        return UpcomingConsults.builder()
+                .consultId(id)
+                .contentsUrl(contentsUrl)
+                .zoomLink(zoomLink)
+                .reason(reason)
+                .status(status)
+                .major(major)
+                .createAt(createAt)
+                .updateAt(updateAt)
+                .build();
+    }
+    public PreviousConsult toPreviousConsult(){
+        return PreviousConsult.builder()
+                .consultId(id)
+                .contentsUrl(contentsUrl)
+                .zoomLink(zoomLink)
+                .reason(reason)
+                .status(status)
+                .major(major)
                 .createAt(createAt)
                 .updateAt(updateAt)
                 .build();
