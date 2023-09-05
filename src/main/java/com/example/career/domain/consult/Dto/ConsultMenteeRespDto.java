@@ -9,11 +9,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class QueryRespDto {
-    private Long id;
-    private String flow;
-    private String query1;
-    private String query2;
-    private String etc;
-
+public class ConsultMenteeRespDto {
+    private Long stuId;
+    private String nickname;
+    private boolean gender;
+    private String birth;
+    private String profileImg;
+    private String stuUrl;
 }

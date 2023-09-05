@@ -1,5 +1,6 @@
 package com.example.career.domain.consult.Entity;
 
+import com.example.career.domain.consult.Dto.QueryRespDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,4 +35,14 @@ public class Query
 
     @Column(columnDefinition = "TEXT")
     String etc;
+
+    public QueryRespDto toQueryRespDto() {
+        return QueryRespDto.builder()
+                .id(id)
+                .flow(flow)
+                .query1(query1)
+                .query2(query2)
+                .etc(etc)
+                .build();
+    }
 }

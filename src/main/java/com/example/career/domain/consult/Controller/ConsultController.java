@@ -30,4 +30,10 @@ public class ConsultController {
     public ValidCheck consultAcception(@RequestParam int status, @RequestBody ConsultYesorNoReqDto consultYesorNoReqDto){
         return new ValidCheck(consultService.requestConsult(consultYesorNoReqDto, status));
     }
+
+    // 멘토 홈페이지 상담내역 메서드
+    @GetMapping ("mentor/{id}")
+    public ValidCheck mentorHome(@PathVariable("id") Long userId){
+        return new ValidCheck(consultService.getMentorHome(userId));
+    }
 }
