@@ -1,5 +1,6 @@
 package com.example.career.domain.user.Entity;
 
+import com.example.career.domain.consult.Dto.ConsultMenteeRespDto;
 import com.example.career.domain.user.Dto.MenteeRespDto;
 import com.example.career.domain.user.Dto.MentorHomeRespDto;
 import jakarta.persistence.*;
@@ -106,7 +107,16 @@ public class User
                 .stuUrl("https://test.com")
                 .build();
     }
-
+    public ConsultMenteeRespDto toConsultMenteeRespDto(){
+        return ConsultMenteeRespDto.builder()
+                .stuId(id)
+                .nickname(nickname)
+                .gender(gender)
+                .birth(birth)
+                .profileImg(profileImg)
+                .stuUrl("https://test.com")
+                .build();
+    }
 //
 //    @Override
 //    public Collection<? extends GrantedAuthority> getAuthorities() {
