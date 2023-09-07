@@ -51,16 +51,16 @@ public class SecurityConfig {
 
                 .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
 
-//                .exceptionHandling()
-//                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-//                .accessDeniedHandler(jwtAccessDeniedHandler)
+                .exceptionHandling()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .accessDeniedHandler(jwtAccessDeniedHandler)
 //
 //                // 세션을 사용하지 않기 때문에 STATELESS로 설정
 //                .and()
 //                .sessionManagement()
 //                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 //
-//                .and()
+                .and()
                 .authorizeHttpRequests()
 //                .requestMatchers("/test", "/api/hello", "/api/authenticate", "/user/signup").permitAll()
                 .requestMatchers("/user/signup/mentor", "/user/file/*","/consultation/mentor/*", "/api/authenticate").permitAll()
