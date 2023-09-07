@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Builder
+@DynamicUpdate
 @Table(name = "Career")
 public class Career {
 
@@ -22,9 +24,9 @@ public class Career {
     private Long id;
 
     @Column(nullable = false)
-    private Long tutor_id;
+    private Long tutorId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private Long idx;
 
     @Column(columnDefinition = "VARCHAR(20)")

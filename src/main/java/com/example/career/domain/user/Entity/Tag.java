@@ -5,12 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Builder
+@DynamicUpdate
 @Table(name = "Tag")
 public class Tag {
     @Id
@@ -19,9 +21,9 @@ public class Tag {
     private Long id;
 
     @Column(nullable = false)
-    private Long tutor_id;
+    private Long tutorId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private Long idx;
 
     @Column(nullable = false, columnDefinition = "VARCHAR(15)")

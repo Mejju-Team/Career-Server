@@ -1,6 +1,7 @@
 package com.example.career.domain.user.Dto;
 
 import com.example.career.domain.user.Entity.Authority;
+import com.example.career.domain.user.Entity.TutorDetail;
 import com.example.career.domain.user.Entity.User;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +25,14 @@ import java.util.stream.Collectors;
 public class SignUpReqDto {
     private String name; //
     private String username; //
-    private String telephone; //
-    private String role ="USER"; // USER
-    private String introduce; //
-    private String password; //
-    private Boolean gender; //
-    private String nickname;//
     private String birth;
+    private String nickname;//
+    private String telephone; //
+    private String password; //
+    private String role ="USER"; // USER
+    private Boolean gender; //
+    private String introduce; //
+    private String hobby;
     private Set<AuthorityDto> authorityDtoSet;
 
     private String profileImg; // MultipartFile
@@ -39,8 +41,6 @@ public class SignUpReqDto {
     private String consultMajor3;
 
     private String plan; // 커리어 모ㅗㄱㄱ표
-
-    private String hobby;
 
     private List<SchoolDto> schoolList;
 
@@ -63,11 +63,21 @@ public class SignUpReqDto {
                 .gender(gender)
                 .birth(birth)
                 .role(role)
+                .hobby(hobby)
                 .status(0)
                 .introduce(introduce)
                 .authType(1)
                 .authorities(authorities)
                 .activated(true)
+                .build();
+    }
+
+    public TutorDetail toTutorDetailEntity(Long tutorId) {
+        return TutorDetail.builder()
+                .tutorId(tutorId)
+                .consultMajor1(consultMajor1)
+                .consultMajor2(consultMajor2)
+                .consultMajor3(consultMajor3)
                 .build();
     }
 
@@ -80,6 +90,7 @@ public class SignUpReqDto {
                 .nickname(user.getNickname())
                 .password(user.getPassword())
                 .gender(user.getGender())
+                .hobby(user.getHobby())
                 .birth(user.getBirth())
                 .telephone(user.getTelephone())
                 .authorityDtoSet(user.getAuthorities().stream()

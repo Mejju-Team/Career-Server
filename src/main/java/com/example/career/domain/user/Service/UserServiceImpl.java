@@ -13,10 +13,8 @@ import com.example.career.global.utils.S3Uploader;
 import lombok.AllArgsConstructor;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.lang.reflect.Field;
+import java.util.*;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -29,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
+    private final TutorDetailRepository tutorDetailRepository;
     private final SchoolRepository schoolRepository;
     private final TagRepository tagRepository;
     private final CareerRepository careerRepository;
@@ -59,28 +58,121 @@ public class UserServiceImpl implements UserService{
 
     @Transactional
     @Override
-    public SignUpReqDto signup(SignUpReqDto userDto) {
-        if (userRepository.findOneWithAuthoritiesByUsername(userDto.getUsername()).orElse(null) != null) {
+    public SignUpReqDto signup(SignUpReqDto signUpReqDto) {
+        if (userRepository.findOneWithAuthoritiesByUsername(signUpReqDto.getUsername()).orElse(null) != null) {
             throw new DuplicateMemberException("이미 가입되어 있는 유저입니다.");
         }
-
-        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        System.out.println(signUpReqDto.getPassword());
+        signUpReqDto.setPassword(passwordEncoder.encode(signUpReqDto.getPassword()));
 
         Authority authority = Authority.builder()
                 .authorityName("ROLE_USER")
                 .build();
 
-        User user = userDto.toUserEntity(Collections.singleton(authority));
+        User user = signUpReqDto.toUserEntity(Collections.singleton(authority));
         user = userRepository.save(user);
 
         Long id = user.getId();
 
-        EntityUtils.saveEntities(userDto.getSchoolList(), id, schoolRepository, SchoolDto::toSchoolEntity);
-        EntityUtils.saveEntities(userDto.getCareerList(), id, careerRepository, CareerDto::toCareerEntity);
-        EntityUtils.saveEntities(userDto.getTagList(), id, tagRepository, TagDto::toTagEntity);
+        TutorDetail tutorDetail = signUpReqDto.toTutorDetailEntity(id);
+        tutorDetailRepository.save(tutorDetail);
+
+//        EntityUtils.saveEntities(signUpReqDto.getSchoolList(), id, schoolRepository, SchoolDto::toSchoolEntity);
+//        EntityUtils.saveEntities(signUpReqDto.getCareerList(), id, careerRepository, CareerDto::toCareerEntity);
+//        EntityUtils.saveEntities(signUpReqDto.getTagList(), id, tagRepository, TagDto::toTagEntity);
 
         return SignUpReqDto.from(user);
     }
+
+    @Override
+    public User getUserByUsername(String username) throws Exception {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("No user found with username: " + username));
+        return user;
+    }
+
+    @Transactional
+    @Override
+    public void modifyProfile(SignUpReqDto signUpReqDto, String username) throws Exception {
+        User user = getUserByUsername(username);
+
+        Long id = user.getId();
+
+        TutorDetail tutorDetail = tutorDetailRepository.findByTutorId(id);
+
+        Set<String> userFields = new HashSet<>(Arrays.asList("name", "username", "birth", "nickname", "telephone", "password", "gender", "introduce", "hobby", "profileImg"));
+        Set<String> tutorDetailFields = new HashSet<>(Arrays.asList("consultMajor1", "consultMajor2", "consultMajor3"));
+
+        updateEntityFields(user, signUpReqDto, userFields, false);
+        updateEntityFields(tutorDetail, signUpReqDto, tutorDetailFields, false);
+
+
+
+        List<SchoolDto> schoolList = signUpReqDto.getSchoolList();
+        List<TagDto> tagList = signUpReqDto.getTagList();
+        List<CareerDto> careerList = signUpReqDto.getCareerList();
+
+        // SchoolList, TagList, CareerList에 대해 업데이트
+        EntityUtils.processEntities(
+                signUpReqDto.getSchoolList(),
+                id,
+                schoolRepository,
+                SchoolDto::toSchoolEntity,
+                (tutorId, idx) -> schoolRepository.findByTutorIdAndIdx(tutorId, idx),
+                (entity, dto, fields, isUpdate) -> updateEntityFields(entity, dto, fields, isUpdate),
+                dto -> ((SchoolDto) dto).getIdx()
+        );
+
+        EntityUtils.processEntities(
+                signUpReqDto.getTagList(),
+                id,
+                tagRepository,
+                TagDto::toTagEntity,
+                (tutorId, idx) -> tagRepository.findByTutorIdAndIdx(tutorId, idx),
+                (entity, dto, fields, isUpdate) -> updateEntityFields(entity, dto, fields, isUpdate),
+                dto -> ((TagDto) dto).getIdx()
+        );
+
+
+        EntityUtils.processEntities(
+                signUpReqDto.getCareerList(),
+                id,
+                careerRepository,
+                CareerDto::toCareerEntity,
+                (tutorId, idx) -> careerRepository.findByTutorIdAndIdx(tutorId, idx),
+                (entity, dto, fields, isUpdate) -> updateEntityFields(entity, dto, fields, isUpdate),
+                dto -> ((CareerDto) dto).getIdx()
+        );
+
+        //TODO: List<MultipartFile> activeImg 저장해야함.
+        
+    }
+
+    private <T, DTO> void updateEntityFields(T entity, DTO dto, Set<String> fieldsToCheck, boolean skip) {
+        if (entity == null) {
+            return;
+        }
+        Field[] dtoFields = dto.getClass().getDeclaredFields();
+        for (Field field : dtoFields) {
+            if (!skip && !fieldsToCheck.contains(field.getName())) {
+                continue;
+            }
+            field.setAccessible(true);
+            try {
+                Object value = field.get(dto);
+                if (value != null) {
+                    Field entityField = entity.getClass().getDeclaredField(field.getName());
+                    entityField.setAccessible(true);
+                    entityField.set(entity, value);
+                    entityField.setAccessible(false);
+                }
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                // 예외 처리
+            }
+            field.setAccessible(false);
+        }
+    }
+
     @Transactional(readOnly = true)
     @Override
     public SignUpReqDto getUserWithAuthorities(String username) {

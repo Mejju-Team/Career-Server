@@ -1,9 +1,9 @@
 package com.example.career.domain.user.Controller;
 
-import com.example.career.domain.user.Dto.SignUpReqDto;
-import com.example.career.domain.user.Dto.UserReqDto;
-import com.example.career.domain.user.Entity.User;
-import com.example.career.domain.user.Service.UserService;
+import com.example.career.domain.user.Dto.*;
+import com.example.career.domain.user.Entity.*;
+import com.example.career.domain.user.Service.*;
+import com.example.career.global.annotation.Authenticated;
 import com.example.career.global.valid.ValidCheck;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,13 +22,18 @@ import java.io.IOException;
 import java.util.List;
 
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("user")
 @AllArgsConstructor
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
+    private final TutorDetailService tutorDetailService;
+    private final SchoolService schoolService;
+    private final TagService tagService;
+    private final CareerService careerService;
     
     // 로그인
     @PostMapping("signin")
@@ -43,7 +48,53 @@ public class UserController {
     // TODO : jwt token
     @Transactional
     @PostMapping("signup/mentor")
-    public ResponseEntity<SignUpReqDto> signUp(MultipartHttpServletRequest request) throws IOException {
+    public ResponseEntity<SignUpReqDto> signUp(@RequestBody SignUpReqDto signUpReqDto) throws IOException {
+        return ResponseEntity.ok(userService.signup(signUpReqDto));
+    }
+
+    @Authenticated
+    @GetMapping("/mentor/profile")
+    public ResponseEntity<Object> getProfile(HttpServletRequest request) throws Exception {
+        String username = (String) request.getAttribute("subject");
+
+        try {
+            User user = userService.getUserByUsername(username);
+            Long id = user.getId();
+            SignUpReqDto signUpReqDto = SignUpReqDto.from(user);
+
+            TutorDetail tutorDetail = tutorDetailService.getTutorDetailByTutorId(id);
+            signUpReqDto.setConsultMajor1(tutorDetail.getConsultMajor1());
+            signUpReqDto.setConsultMajor2(tutorDetail.getConsultMajor2());
+            signUpReqDto.setConsultMajor3(tutorDetail.getConsultMajor3());
+
+            List<School> schoolList = schoolService.getSchoolByTutorId(id);
+            List<Tag> tagList = tagService.getTagByTutorId(id);
+            List<Career> careerList = careerService.getCareerByTutorId(id);
+
+            List<SchoolDto> schoolDtoList = schoolList.stream().map(SchoolDto::from)
+                    .collect(Collectors.toList());
+            List<TagDto> tagDtoList = tagList.stream().map(TagDto::from)
+                    .collect(Collectors.toList());
+            List<CareerDto> careerDtoList = careerList.stream().map(CareerDto::from)
+                    .collect(Collectors.toList());
+
+
+            signUpReqDto.setSchoolList(schoolDtoList);
+            signUpReqDto.setTagList(tagDtoList);
+            signUpReqDto.setCareerList(careerDtoList);
+
+            return ResponseEntity.ok(signUpReqDto);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error message");
+        }
+    }
+
+    @Transactional
+    @Authenticated
+    @PostMapping("/mentor/modify_profile")
+    public ResponseEntity<Object> modifyProfile(MultipartHttpServletRequest request) throws Exception {
+
+        String username = (String) request.getAttribute("subject");
 
         // 파일 데이터 추출
         MultipartFile multipartFile = request.getFile("image");
@@ -52,11 +103,16 @@ public class UserController {
         String jsonStr = request.getParameter("json");
         SignUpReqDto user = new ObjectMapper().readValue(jsonStr, SignUpReqDto.class);
 
-        String url = userService.uploadProfile(multipartFile);
-        user.setProfileImg(url);
+        if (multipartFile != null) {
+            String url = userService.uploadProfile(multipartFile);
+            user.setProfileImg(url);
+        }
 
-        return ResponseEntity.ok(userService.signup(user));
+        userService.modifyProfile(user, username);
+        
+        return ResponseEntity.ok(null);
     }
+
     @PostMapping("/signup")
     public ResponseEntity<SignUpReqDto> signup(@Valid @RequestBody SignUpReqDto userDto) {
         return ResponseEntity.ok(userService.signup(userDto));
