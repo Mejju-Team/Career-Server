@@ -1,10 +1,13 @@
 package com.example.career.global.aop;
 
+import com.example.career.domain.user.Entity.User;
+import com.example.career.domain.user.Service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -22,11 +25,14 @@ import java.security.Key;
 
 @Aspect
 @Component
+@RequiredArgsConstructor
 public class AuthenticationAspect {
     private static final String AUTHORIZATION_HEADER = "Authorization";
 
     @Value("${jwt.secret}")
     private String secret;
+
+    private final UserService userService;
 
     @Before("@annotation(com.example.career.global.annotation.Authenticated)")
     public void authenticate(JoinPoint joinPoint) throws Throwable {
@@ -51,6 +57,8 @@ public class AuthenticationAspect {
                 .getBody();
         String subject = claims.getSubject();
 
+        User user = userService.getUserByUsername(subject);
+        request.setAttribute("userId", user.getId());
         // request에 attribute로 subject를 추가
         request.setAttribute("subject", subject);
     }
