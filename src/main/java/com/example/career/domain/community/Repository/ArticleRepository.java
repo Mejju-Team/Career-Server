@@ -22,5 +22,5 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     @Query("UPDATE Article a SET a.title = :title, a.content = :content, a.updatedAt = :updatedAt WHERE a.id = :id")
     void updateArticleTitleAndContent(@Param("id") Long id, @Param("title") String title, @Param("content") String content,  @Param("updatedAt") LocalDateTime updatedAt);
 
-    Optional<Article> findByIdAndUserId(Long Id, Long userId);
+    void deleteByIdAndUserId(Long Id, Long userId);
 }

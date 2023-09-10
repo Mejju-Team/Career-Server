@@ -10,10 +10,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface HeartRepository extends JpaRepository<Heart, Long> {
-    @Query("SELECT a FROM Article a INNER JOIN Heart h ON a.id = h.articleId WHERE h.userId = :userId")
-    Page<Article> findArticlesByUserId(@Param("userId") Long userId, Pageable pageable);
+    @Query("SELECT a FROM Article a INNER JOIN Heart h ON a.id = h.typeId WHERE h.userId = :userId AND h.type = :type")
+    Page<Article> findArticlesByUserIdAndType(@Param("userId") Long userId, @Param("type") int type, Pageable pageable);
 
+    void deleteByUserIdAndTypeIdAndType(Long userId, Long typeId, int type);
 }

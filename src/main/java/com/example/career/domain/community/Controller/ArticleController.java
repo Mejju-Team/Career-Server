@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -50,10 +51,13 @@ public class ArticleController {
     }
 
     @Authenticated
+    @Transactional
     @DeleteMapping("delete")
     public ResponseEntity<Object> deleteArticle(@RequestBody ArticleDto articleDto, HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");
-        articleRepository.findByIdAndUserId(articleDto.getId(), userId).orElseThrow(() -> new AuthenticationException("잘못된 JWT 서명입니다.") {});
+        System.out.println("userId = " + userId);
+        System.out.println("articleDto.getId() = " + articleDto.getId());
+        articleRepository.deleteByIdAndUserId(articleDto.getId(), userId);
         return ResponseEntity.ok().build();
     }
 
