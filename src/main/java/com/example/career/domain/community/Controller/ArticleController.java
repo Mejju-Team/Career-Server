@@ -29,7 +29,7 @@ public class ArticleController {
 
     @GetMapping("all")
     public ResponseEntity<List<Article>> allArticles(@RequestParam int page, @RequestParam int size) {
-        PageRequest pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
+        PageRequest pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Article> result = articleRepository.findAll(pageable);
         List<Article> entities = result.getContent(); // 실제 데이터 리스트
         return ResponseEntity.ok(entities);

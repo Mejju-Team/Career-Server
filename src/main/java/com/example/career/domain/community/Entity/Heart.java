@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Builder
 @Table(name = "Heart", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"userId", "articleId", "type"})
+        @UniqueConstraint(columnNames = {"userId", "typeId", "type"})
 })
 public class Heart {
     @Id
@@ -26,7 +26,7 @@ public class Heart {
     private Long userId;
 
     @Column(nullable = false)
-    private Long articleId;
+    private Long typeId;
 
     @Column(nullable = false)
     private int type;
