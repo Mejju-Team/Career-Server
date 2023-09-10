@@ -32,7 +32,7 @@ public class Comment {
 
     @Column(nullable = false)
     @ColumnDefault("0")
-    private int likeCnt;
+    private int heartCnt;
 
     @Column(nullable = false)
     @ColumnDefault("0")

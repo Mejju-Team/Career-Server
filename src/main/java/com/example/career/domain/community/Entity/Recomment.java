@@ -34,7 +34,7 @@ public class Recomment {
 
     @Column(nullable = false)
     @ColumnDefault("0")
-    private int likeCnt;
+    private int heartCnt;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
