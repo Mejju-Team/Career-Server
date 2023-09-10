@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -44,12 +46,10 @@ public class Article {
     private int commentCnt;
 
 
-    private LocalDateTime createAt;
-    private LocalDateTime updateAt;
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
-    @PrePersist // 데이터 생성이 이루어질때 사전 작업
-    public void prePersist() {
-        this.createAt = LocalDateTime.now();
-        this.updateAt = this.createAt;
-    }
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
 }

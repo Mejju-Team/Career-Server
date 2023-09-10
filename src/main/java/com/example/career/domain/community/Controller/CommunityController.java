@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.time.LocalDateTime;
+
 @Controller
 @RequestMapping("community")
 @RequiredArgsConstructor
@@ -29,4 +31,9 @@ public class CommunityController {
         return ResponseEntity.ok(article);
     }
 
+    @PostMapping("modify_article")
+    public ResponseEntity<Object> modifyArticle(@RequestBody ArticleDto articleDto, HttpServletRequest request) {
+        articleRepository.updateArticleTitleAndContent(articleDto.getId(), articleDto.getTitle(), articleDto.getContent(), LocalDateTime.now());
+        return ResponseEntity.ok().build();
+    }
 }
