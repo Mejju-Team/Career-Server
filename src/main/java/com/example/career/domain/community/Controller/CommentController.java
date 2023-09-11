@@ -12,12 +12,22 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/community/comment")
 @RequiredArgsConstructor
 public class CommentController {
     private final CommentService commentService;
+
+    @Authenticated
+    @GetMapping("all_article")
+    public ResponseEntity<List<Article>> allCommentedArticles(HttpServletRequest request, @RequestParam int page, @RequestParam int size) {
+        Long userId = (Long) request.getAttribute("userId");
+        List<Article> articles = commentService.allCommentedArticles(userId, page, size);
+        return ResponseEntity.ok(articles);
+    }
 
     @Authenticated
     @PostMapping("/add")
