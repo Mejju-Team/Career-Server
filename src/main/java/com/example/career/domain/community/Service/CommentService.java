@@ -19,7 +19,7 @@ public class CommentService {
     }
 
     public void updateComment(CommentDto commentDto, Long userId) {
-        commentRepository.updateContentByuserId(commentDto.getId(), commentDto.getContent(), userId, LocalDateTime.now());
+        commentRepository.updateContentByuserIdAndId(commentDto.getId(), commentDto.getContent(), userId, LocalDateTime.now());
     }
 
     @Transactional
