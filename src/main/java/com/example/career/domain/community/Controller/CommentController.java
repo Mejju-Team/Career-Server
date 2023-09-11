@@ -21,7 +21,7 @@ public class CommentController {
 
     @Authenticated
     @PostMapping("/add")
-    public ResponseEntity<Article> addComment(@RequestBody CommentDto commentDto, HttpServletRequest request) {
+    public ResponseEntity<Comment> addComment(@RequestBody CommentDto commentDto, HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");
         Comment comment = commentService.addComment(commentDto, userId);
         return ResponseEntity.ok(comment);
