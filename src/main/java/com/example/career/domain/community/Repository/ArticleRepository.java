@@ -25,14 +25,23 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     @Modifying
     @Transactional
-    @Query("UPDATE Article a SET a.heartCnt = a.heartCnt + 1 WHERE a.id = :id")
-    void incrementArticleThumbsUp(@Param("id") Long id);
+    @Query("UPDATE Article a SET a.heartCnt = a.heartCnt + 1 WHERE a.id = :id AND a.userId = :userId")
+    void incrementArticleThumbsUp(@Param("id") Long id, @Param("userId") Long userId);
 
     @Modifying
     @Transactional
-    @Query("UPDATE Article a SET a.heartCnt = a.heartCnt - 1 WHERE a.id = :id")
-    void decrementArticleThumbsUp(@Param("id") Long id);
+    @Query("UPDATE Article a SET a.heartCnt = a.heartCnt - 1 WHERE a.id = :id AND a.userId = :userId")
+    void decrementArticleThumbsUp(@Param("id") Long id, @Param("userId") Long userId);
 
+    @Modifying
+    @Transactional
+    @Query("UPDATE Article a SET a.commentCnt = a.commentCnt + 1 WHERE a.id = :id AND a.userId = :userId")
+    void incrementArticleCommentCnt(@Param("id") Long id, @Param("userId") Long userId);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Article a SET a.commentCnt = a.commentCnt - 1 WHERE a.id = :id AND a.userId = :userId")
+    void decrementArticleCommentCnt(@Param("id") Long id, @Param("userId") Long userId);
     @Transactional
     void deleteByIdAndUserId(Long Id, Long userId);
 }

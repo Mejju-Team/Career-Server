@@ -17,17 +17,20 @@ import java.time.LocalDateTime;
 public class RecommentService {
 
     private final RecommentRepository repository;
+    private final CommentRepository commentRepository;
 
+    @Transactional
     public Recomment addRecomment(RecommentDto recommentDto, Long userId) {
+        commentRepository.incrementRecommentCntByIdAndUserId(recommentDto.getCommentId(), userId);
         return repository.save(recommentDto.toRecommentEntity(userId));
     }
 
     public void updateRecomment(RecommentDto recommentDto, Long userId) {
         repository.updateContentByIdAnduserId(recommentDto.getId(), recommentDto.getContent(), userId, LocalDateTime.now());
     }
-
     @Transactional
     public void deleteRecommentByUserIdAndId(Long userId, Long id) {
+        commentRepository.decrementRecommentCntByIdAndUserId(id, userId);
         repository.deleteByUserIdAndId(userId, id);
     }
 }

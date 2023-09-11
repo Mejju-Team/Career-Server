@@ -7,7 +7,9 @@ import com.example.career.domain.community.Entity.Heart;
 import com.example.career.domain.community.Repository.ArticleRepository;
 import com.example.career.domain.community.Repository.HeartRepository;
 import com.example.career.domain.community.Service.ArticleService;
+import com.example.career.domain.community.Service.CommentService;
 import com.example.career.domain.community.Service.HeartService;
+import com.example.career.domain.community.Service.RecommentService;
 import com.example.career.global.annotation.Authenticated;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -39,35 +41,19 @@ public class HeartController {
         return ResponseEntity.ok(articles);
     }
 
-    @Transactional
     @Authenticated
     @PostMapping("/add")
     public ResponseEntity<Heart> addHeart(@RequestBody HeartDto heartDto, HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");
         Heart heart = heartService.addHeart(heartDto, userId);
-        //TODO: 댓글, 대댓글 좋아요 갯수 늘리기 구현
-        int type = heartDto.getType();
-        if (type == 0) {
-            articleService.incrementThumbsUpCnt(heartDto.getTypeId());
-        } else if (heartDto.getType() == 1) { // 댓글에 좋아요
-        } else { // 대댓글에 좋아요
-        }
         return ResponseEntity.ok(heart);
     }
 
-    @Transactional
     @Authenticated
     @DeleteMapping("/delete")
     public ResponseEntity<Object> deleteArticle(@RequestBody HeartDto heartDto, HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");
         heartService.deleteHeart(heartDto, userId);
-        //TODO: 댓글, 대댓글 좋아요 갯수 decrement 구현
-        int type = heartDto.getType();
-        if (type == 0) {
-            articleService.decrementThumbsUpCnt(heartDto.getTypeId());
-        } else if (heartDto.getType() == 1) { // 댓글에 좋아요
-        } else { // 대댓글에 좋아요
-        }
         return ResponseEntity.ok().build();
     }
 

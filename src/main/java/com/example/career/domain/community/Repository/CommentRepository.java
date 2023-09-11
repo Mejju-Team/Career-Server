@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
@@ -24,6 +25,26 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Transactional
     public void deleteByUserIdAndId(Long UserId, Long id);
 
-    @Query("SELECT DISTINCT a FROM Article a INNER JOIN Comment c ON a.id = c.articleId AND c.userId = :userId UNION SELECT DISTINCT a FROM Article a INNER JOIN Recomment r ON a.id = r.articleId AND r.userId = :userId")
-    Page<Article> findArticlesByUserId(Long userId, Pageable pageable);
+    @Query("SELECT DISTINCT a FROM Article a INNER JOIN Comment c ON a.id = c.articleId AND c.userId = :userId UNION SELECT DISTINCT a FROM Article a INNER JOIN Recomment r ON a.id = r.articleId AND r.userId = :userId ORDER BY a.createdAt DESC")
+    List<Article> findArticlesByUserId(@Param("userId") Long userId);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Comment c SET c.heartCnt = c.heartCnt + 1 WHERE c.id = :id AND c.userId = :userId")
+    public void incrementThumbsUpCnt(@Param("id") Long id, @Param("userId") Long userId);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Comment c SET c.heartCnt = c.heartCnt - 1 WHERE c.id = :id AND c.userId = :userId")
+    public void decrementThumbsUpCnt(@Param("id") Long id, @Param("userId") Long userId);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Comment c SET c.recommentCnt = c.recommentCnt + 1 WHERE c.id = :id AND c.userId = :userId")
+    public void incrementRecommentCntByIdAndUserId(@Param("id") Long id, @Param("userId") Long userId);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Comment c SET c.recommentCnt = c.recommentCnt - 1 WHERE c.id = :id AND c.userId = :userId")
+    public void decrementRecommentCntByIdAndUserId(@Param("id") Long id, @Param("userId") Long userId);
 }

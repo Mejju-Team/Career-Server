@@ -11,11 +11,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/community/comment")
+@RequestMapping("/community/recomment")
 @RequiredArgsConstructor
 public class RecommentController {
     private final RecommentService recommentService;
@@ -39,7 +40,7 @@ public class RecommentController {
     @DeleteMapping("delete")
     public ResponseEntity<Object> deleteRecomment(@RequestBody RecommentDto recommentDto, HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");
-        recommentService.deleteRecommentByUserIdAndId(userId, recommentDto.getId());
+        recommentService.deleteRecommentByUserIdAndId(userId, recommentDto.getId());;
         return ResponseEntity.ok().build();
     }
 }

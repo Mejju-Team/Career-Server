@@ -31,16 +31,6 @@ public class ArticleService {
     }
 
     @Transactional
-    public void incrementThumbsUpCnt(Long articleId) {
-        articleRepository.incrementArticleThumbsUp(articleId);
-    }
-
-    @Transactional
-    public void decrementThumbsUpCnt(Long articleId) {
-        articleRepository.decrementArticleThumbsUp(articleId);
-    }
-
-    @Transactional
     public void updateArticle(ArticleDto articleDto, Long userId) {
         articleRepository.updateArticleTitleAndContent(userId, articleDto.getId(), articleDto.getTitle(), articleDto.getContent(), LocalDateTime.now());
     }
