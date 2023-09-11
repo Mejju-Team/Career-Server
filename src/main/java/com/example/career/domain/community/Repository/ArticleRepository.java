@@ -19,19 +19,29 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     @Modifying
     @Transactional
-    @Query("UPDATE Article a SET a.title = :title, a.content = :content, a.updatedAt = :updatedAt WHERE a.id = :id")
-    void updateArticleTitleAndContent(@Param("id") Long id, @Param("title") String title, @Param("content") String content,  @Param("updatedAt") LocalDateTime updatedAt);
+    @Query("UPDATE Article a SET a.title = :title, a.content = :content, a.updatedAt = :updatedAt WHERE a.id = :id AND a.userId = :userId")
+    void updateArticleTitleAndContent(@Param("userId") Long userId, @Param("id") Long id, @Param("title") String title, @Param("content") String content,  @Param("updatedAt") LocalDateTime updatedAt);
 
 
     @Modifying
     @Transactional
-    @Query("UPDATE Article a SET a.heartCnt = a.heartCnt + 1 WHERE a.id = :id")
-    void incrementArticleThumbsUp(@Param("id") Long id);
+    @Query("UPDATE Article a SET a.heartCnt = a.heartCnt + 1 WHERE a.id = :id AND a.userId = :userId")
+    void incrementArticleThumbsUp(@Param("id") Long id, @Param("userId") Long userId);
 
     @Modifying
     @Transactional
-    @Query("UPDATE Article a SET a.heartCnt = a.heartCnt - 1 WHERE a.id = :id")
-    void decrementArticleThumbsUp(@Param("id") Long id);
+    @Query("UPDATE Article a SET a.heartCnt = a.heartCnt - 1 WHERE a.id = :id AND a.userId = :userId")
+    void decrementArticleThumbsUp(@Param("id") Long id, @Param("userId") Long userId);
 
+    @Modifying
+    @Transactional
+    @Query("UPDATE Article a SET a.commentCnt = a.commentCnt + 1 WHERE a.id = :id AND a.userId = :userId")
+    void incrementArticleCommentCnt(@Param("id") Long id, @Param("userId") Long userId);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Article a SET a.commentCnt = a.commentCnt - 1 WHERE a.id = :id AND a.userId = :userId")
+    void decrementArticleCommentCnt(@Param("id") Long id, @Param("userId") Long userId);
+    @Transactional
     void deleteByIdAndUserId(Long Id, Long userId);
 }

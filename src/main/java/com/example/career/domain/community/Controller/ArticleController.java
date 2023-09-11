@@ -42,8 +42,9 @@ public class ArticleController {
     }
 
     @PostMapping("/modify")
-    public ResponseEntity<Object> modifyArticle(@RequestBody ArticleDto articleDto) {
-        articleService.updateArticle(articleDto);
+    public ResponseEntity<Object> modifyArticle(@RequestBody ArticleDto articleDto, HttpServletRequest request) {
+        Long userId = (Long) request.getAttribute("userId");
+        articleService.updateArticle(articleDto, userId);
         return ResponseEntity.ok().build();
     }
 
