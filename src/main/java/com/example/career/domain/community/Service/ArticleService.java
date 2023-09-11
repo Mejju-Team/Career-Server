@@ -41,8 +41,8 @@ public class ArticleService {
     }
 
     @Transactional
-    public void updateArticle(ArticleDto articleDto) {
-        articleRepository.updateArticleTitleAndContent(articleDto.getId(), articleDto.getTitle(), articleDto.getContent(), LocalDateTime.now());
+    public void updateArticle(ArticleDto articleDto, Long userId) {
+        articleRepository.updateArticleTitleAndContent(userId, articleDto.getId(), articleDto.getTitle(), articleDto.getContent(), LocalDateTime.now());
     }
 
     @Transactional
