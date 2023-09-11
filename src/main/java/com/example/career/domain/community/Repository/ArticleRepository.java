@@ -33,5 +33,6 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     @Query("UPDATE Article a SET a.heartCnt = a.heartCnt - 1 WHERE a.id = :id")
     void decrementArticleThumbsUp(@Param("id") Long id);
 
+    @Transactional
     void deleteByIdAndUserId(Long Id, Long userId);
 }
