@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public interface RecommentRepository extends JpaRepository<Recomment, Long> {
@@ -30,4 +31,6 @@ public interface RecommentRepository extends JpaRepository<Recomment, Long> {
     @Transactional
     @Query("UPDATE Recomment r SET r.heartCnt = r.heartCnt - 1 WHERE r.id = :id AND r.userId = :userId")
     public void decrementThumbsUpCnt(@Param("id") Long id, @Param("userId") Long userId);
+    @Query("SELECT c.articleId FROM Recomment c WHERE c.content LIKE %:keyword%")
+    List<Long> findArticleIdsByContentContaining(String keyword);
 }

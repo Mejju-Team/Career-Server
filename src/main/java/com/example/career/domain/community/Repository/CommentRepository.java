@@ -47,4 +47,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Transactional
     @Query("UPDATE Comment c SET c.recommentCnt = c.recommentCnt - 1 WHERE c.id = :id AND c.userId = :userId")
     public void decrementRecommentCntByIdAndUserId(@Param("id") Long id, @Param("userId") Long userId);
+
+    @Query("SELECT c.articleId FROM Comment c WHERE c.content LIKE %:keyword%")
+    List<Long> findArticleIdsByContentContaining(String keyword);
 }
