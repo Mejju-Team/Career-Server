@@ -1,7 +1,10 @@
-package com.example.career.Controller;
+package com.example.career.domain.search.Controller;
 
 import com.example.career.domain.community.Entity.Article;
 import com.example.career.domain.community.Repository.ArticleRepository;
+import com.example.career.domain.community.Repository.CommentRepository;
+import com.example.career.domain.search.Dto.CommunitySearchRespDto;
+import com.example.career.domain.search.Service.SearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,10 +14,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("search")
 public class SearchController {
-    private final ArticleRepository articleRepository;
+    private final SearchService searchService;
 
     @GetMapping("community")
-    public List<Article> searchCommunityList(@RequestParam String keyWord) {
-        return articleRepository.findAllByTitleContainingOrContentContaining(keyWord, keyWord);
-    }
+    public List<CommunitySearchRespDto> searchCommunityList(@RequestParam String keyWord) {
+        return searchService.getArticlesByKeyWord(keyWord);
+  }
 }
