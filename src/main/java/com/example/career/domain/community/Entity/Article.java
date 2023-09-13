@@ -1,6 +1,7 @@
 package com.example.career.domain.community.Entity;
 
 
+import com.example.career.domain.search.Dto.CommunitySearchRespDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -52,4 +53,17 @@ public class Article {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    public CommunitySearchRespDto toDto() {
+        return CommunitySearchRespDto.builder()
+                .id(id)
+                .userId(userId)
+                .categoryId(categoryId)
+                .title(title)
+                .content(content)
+                .heartCnt(heartCnt)
+                .commentCnt(commentCnt)
+                .createdAt(createdAt)
+                .updatedAt(updatedAt)
+                .build();
+    }
 }
