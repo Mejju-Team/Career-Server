@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,27 +24,21 @@ public class SearchServiceImpl implements SearchService{
     @Override
     public List<CommunitySearchRespDto> getArticlesByKeyWord(String keyWord) {
         List<Article> articles = articleRepository.findAllByTitleContainingOrContentContaining(keyWord, keyWord);
-        List<Long> comments = commentRepository.findArticleIdsByContentContaining(keyWord);
-        List<Long> recomms = recommentRepository.findArticleIdsByContentContaining(keyWord);
+        List<Article> comments = commentRepository.searchArticlesByCommentContent(keyWord);
+        List<Article> recomms = recommentRepository.searchArticlesByRecommentContent(keyWord);
         int a = articles.size();
         int b= comments.size();
         int c= recomms.size();
         // Comment 및 Recomment의 Article 정보를 가져와서 articles에 추가
-        for (Long articleId : comments) {
-            Article article = articleRepository.findById(articleId).orElse(null);
-            if (article != null && !articles.contains(article)) {
-                articles.add(article);
-            }
-        }
+        articles.addAll(comments);
+        articles.addAll(recomms);
 
-        for (Long articleId : recomms) {
-            Article article = articleRepository.findById(articleId).orElse(null);
-            if (article != null && !articles.contains(article)) {
-                articles.add(article);
-            }
-        }
         System.out.println(a+","+b+","+c);
-        List<CommunitySearchRespDto> communitySearchRespDtos = articles.stream().map(Article::toDto).collect(Collectors.toList());
+        List<CommunitySearchRespDto> communitySearchRespDtos = articles.stream()
+                .distinct()
+                .map(Article::toDto)
+                .sorted(Comparator.comparing(CommunitySearchRespDto::getId)) // 정렬 코드 추가
+                .collect(Collectors.toList());
         return communitySearchRespDtos;
     }
 }
