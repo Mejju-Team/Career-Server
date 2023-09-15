@@ -26,14 +26,11 @@ public class SearchServiceImpl implements SearchService{
         List<Article> articles = articleRepository.findAllByTitleContainingOrContentContaining(keyWord, keyWord);
         List<Article> comments = commentRepository.searchArticlesByCommentContent(keyWord);
         List<Article> recomms = recommentRepository.searchArticlesByRecommentContent(keyWord);
-        int a = articles.size();
-        int b= comments.size();
-        int c= recomms.size();
+
         // Comment 및 Recomment의 Article 정보를 가져와서 articles에 추가
         articles.addAll(comments);
         articles.addAll(recomms);
 
-        System.out.println(a+","+b+","+c);
         List<CommunitySearchRespDto> communitySearchRespDtos = articles.stream()
                 .distinct()
                 .map(Article::toDto)
