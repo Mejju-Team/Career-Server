@@ -37,7 +37,7 @@ public class SearchServiceImpl implements SearchService{
         List<CommunitySearchRespDto> communitySearchRespDtos = articles.stream()
                 .distinct()
                 .map(Article::toDto)
-                .sorted(Comparator.comparing(CommunitySearchRespDto::getId)) // 정렬 코드 추가
+                .sorted(Comparator.comparing(CommunitySearchRespDto::getId).reversed()) // 정렬 코드 추가
                 .collect(Collectors.toList());
         return communitySearchRespDtos;
     }
