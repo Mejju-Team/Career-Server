@@ -44,4 +44,8 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     void decrementArticleCommentCnt(@Param("id") Long id, @Param("userId") Long userId);
     @Transactional
     void deleteByIdAndUserId(Long Id, Long userId);
+
+    List<Article> findAllByTitleContainingOrContentContaining(String title, String content);
+
+
 }

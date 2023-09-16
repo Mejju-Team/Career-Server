@@ -1,5 +1,6 @@
 package com.example.career.domain.community.Repository;
 
+import com.example.career.domain.community.Entity.Article;
 import com.example.career.domain.community.Entity.Recomment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public interface RecommentRepository extends JpaRepository<Recomment, Long> {
@@ -30,4 +32,9 @@ public interface RecommentRepository extends JpaRepository<Recomment, Long> {
     @Transactional
     @Query("UPDATE Recomment r SET r.heartCnt = r.heartCnt - 1 WHERE r.id = :id AND r.userId = :userId")
     public void decrementThumbsUpCnt(@Param("id") Long id, @Param("userId") Long userId);
+    @Query("SELECT DISTINCT a FROM Article a " +
+            "INNER JOIN Recomment r ON a.id = r.articleId " +
+            "WHERE r.content LIKE %:keyword%")
+    List<Article> searchArticlesByRecommentContent(@Param("keyword") String keyword);
+
 }
