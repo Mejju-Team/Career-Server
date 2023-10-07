@@ -41,12 +41,15 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     @Transactional
     void deleteByIdAndUserId(Long Id, Long userId);
 
-    List<Article> findAllByTitleContainingOrContentContaining(String title, String content);
-
     Optional<Article> findById(Long id);
 
     Page<Article> findByCategoryId(int categoryId, Pageable pageable);
 
     @Query("SELECT new com.example.career.domain.community.Dto.ArticleCountByCategoryDto(a.categoryId, COUNT(a)) FROM Article a GROUP BY a.categoryId")
     List<ArticleCountByCategoryDto> countArticlesByCategoryId();
+
+    @Query("SELECT a FROM Article a WHERE a.title LIKE %:keyword% OR a.content LIKE %:keyword% " +
+            "OR a.id IN (SELECT c.id FROM Comment c WHERE c.content LIKE %:keyword%) " +
+            "OR a.id IN (SELECT r.id FROM Recomment r WHERE r.content LIKE %:keyword%)")
+    List<Article> findAllBySearchKeyWord(@Param("keyword") String keyword, Pageable pageable);
 }
