@@ -21,8 +21,8 @@ import java.util.List;
 public class CommentService {
     private final ArticleRepository articleRepository;
     private final CommentRepository commentRepository;
-    public List<Article> allCommentedArticles(Long userId, int page, int size) {
-        return commentRepository.findArticlesByUserId(userId);
+    public List<CommentDto> allComments(Long userId, int page, int size) {
+        return commentRepository.findCombinedCommentsByUserId(userId, page*size, size);
     }
 
     @Transactional

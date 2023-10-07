@@ -43,9 +43,10 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     List<Article> findAllByTitleContainingOrContentContaining(String title, String content);
 
+    Optional<Article> findById(Long id);
+
     Page<Article> findByCategoryId(int categoryId, Pageable pageable);
 
     @Query("SELECT new com.example.career.domain.community.Dto.ArticleCountByCategoryDto(a.categoryId, COUNT(a)) FROM Article a GROUP BY a.categoryId")
     List<ArticleCountByCategoryDto> countArticlesByCategoryId();
-
 }

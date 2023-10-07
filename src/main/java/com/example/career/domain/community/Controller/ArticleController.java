@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -40,6 +41,12 @@ public class ArticleController {
         return ResponseEntity.ok(articles);
     }
 
+        @GetMapping("detail")
+    public ResponseEntity<Map<String, Object>> allArticles(@RequestParam Long id) {
+        Map<String, Object> details = articleService.getArticleInDetail(id);
+        return ResponseEntity.ok(details);
+    }
+
     @GetMapping("all_category")
     public ResponseEntity<List<Article>> allCategoryArticles(@RequestParam int categoryId, @RequestParam int page, @RequestParam int size) {
         List<Article> articles = articleService.getCategoryArticles(categoryId, page, size);
@@ -51,7 +58,6 @@ public class ArticleController {
         List<ArticleCountByCategoryDto> counts = articleService.getCountByCategoryId();
         return ResponseEntity.ok(counts);
     }
-
 
     @Authenticated
     @PostMapping("/add")

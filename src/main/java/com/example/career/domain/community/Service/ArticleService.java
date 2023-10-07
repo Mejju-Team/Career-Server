@@ -3,7 +3,13 @@ package com.example.career.domain.community.Service;
 import com.example.career.domain.community.Dto.ArticleCountByCategoryDto;
 import com.example.career.domain.community.Dto.ArticleDto;
 import com.example.career.domain.community.Entity.Article;
+import com.example.career.domain.community.Entity.Comment;
+import com.example.career.domain.community.Entity.Recomment;
 import com.example.career.domain.community.Repository.ArticleRepository;
+
+import com.example.career.domain.community.Repository.CommentRepository;
+import com.example.career.domain.community.Repository.RecommentRepository;
+
 import com.example.career.global.utils.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,8 +21,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -25,6 +33,8 @@ import java.util.stream.Collectors;
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
+    private final CommentRepository commentRepository;
+    private final RecommentRepository recommentRepository;
 
     private final S3Uploader s3Uploader;
 
@@ -106,7 +116,27 @@ public class ArticleService {
         articleRepository.deleteByIdAndUserId(id, userId);
     }
 
+
+    public Map<String, Object> getArticleInDetail(Long id) {
+        Map<String, Object> details = new HashMap<>();
+
+        // 게시글 가져오기
+        Article article = articleRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Article not found"));
+        details.put("article", article);
+
+        // 해당 게시글의 댓글 가져오기
+        List<Comment> comments = commentRepository.findByArticleId(id);
+        details.put("comments", comments);
+
+        // 해당 게시글의 대댓글 가져오기
+        List<Recomment> recomments = recommentRepository.findByArticleId(id);
+        details.put("recomments", recomments);
+
+        return details;
+    }
+
     public List<ArticleCountByCategoryDto> getCountByCategoryId() {
-        return articleRepository.countArticlesByCategoryId();
+            List<ArticleCountByCategoryDto> articleCountByCategoryDtos = articleRepository.countArticlesByCategoryId();
+            return articleCountByCategoryDtos;
     }
 }
