@@ -14,6 +14,7 @@ public class CommentDto {
     private Long id;
     private Long userId;
     private String userNickname;
+    private Boolean isTutor;
     private Long articleId;
     private String content;
     private int heartCnt;
@@ -21,10 +22,11 @@ public class CommentDto {
 
     private String articleTitle;
 
-    public Comment toCommentEntity(Long userId, String userNickname) {
+    public Comment toCommentEntity(Long userId, String userNickname, Boolean isTutor) {
         return Comment.builder()
                 .userId(userId)
                 .userNickname(userNickname)
+                .isTutor(isTutor)
                 .articleId(articleId)
                 .content(content)
                 .heartCnt(heartCnt)

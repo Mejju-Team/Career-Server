@@ -17,10 +17,11 @@ public class RecommentDto {
     private String content;
     private int heartCnt;
 
-    public Recomment toRecommentEntity(Long userId, String userNickname) {
+    public Recomment toRecommentEntity(Long userId, String userNickname, Boolean isTutor) {
         return Recomment.builder()
                 .userId(userId)
                 .userNickname(userNickname)
+                .isTutor(isTutor)
                 .articleId(articleId)
                 .commentId(commentId)
                 .content(content)

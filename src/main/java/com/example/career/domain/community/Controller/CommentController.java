@@ -35,7 +35,8 @@ public class CommentController {
     public ResponseEntity<Comment> addComment(@RequestBody CommentDto commentDto, HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");
         String userNickname = (String) request.getAttribute("nickname");
-        Comment comment = commentService.addComment(commentDto, userId, userNickname);
+        Boolean isTutor = (Boolean) request.getAttribute("isTutor");
+        Comment comment = commentService.addComment(commentDto, userId, userNickname, isTutor);
         return ResponseEntity.ok(comment);
     }
 

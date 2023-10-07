@@ -20,9 +20,9 @@ public class RecommentService {
     private final CommentRepository commentRepository;
 
     @Transactional
-    public Recomment addRecomment(RecommentDto recommentDto, Long userId, String userNickname) {
+    public Recomment addRecomment(RecommentDto recommentDto, Long userId, String userNickname, Boolean isTutor) {
         commentRepository.incrementRecommentCntByIdAndUserId(recommentDto.getCommentId(), userId);
-        return repository.save(recommentDto.toRecommentEntity(userId, userNickname));
+        return repository.save(recommentDto.toRecommentEntity(userId, userNickname, isTutor));
     }
 
     public void updateRecomment(RecommentDto recommentDto, Long userId) {

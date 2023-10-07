@@ -44,10 +44,11 @@ public class ArticleDto {
         }
     }
 
-    public Article toArticleEntity(Long userId, String userNickname) {
+    public Article toArticleEntity(Long userId, String userNickname, Boolean isTutor) {
         return Article.builder()
                 .userId(userId)
                 .userNickname(userNickname)
+                .isTutor(isTutor)
                 .categoryId(categoryId)
                 .title(title)
                 .content(content)

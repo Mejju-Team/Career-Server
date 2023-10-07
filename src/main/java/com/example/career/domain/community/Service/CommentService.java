@@ -26,9 +26,9 @@ public class CommentService {
     }
 
     @Transactional
-    public Comment addComment(CommentDto commentDto, Long userId, String userNickname) {
+    public Comment addComment(CommentDto commentDto, Long userId, String userNickname, Boolean isTutor) {
         articleRepository.incrementArticleCommentCnt(commentDto.getArticleId(), userId);
-        return commentRepository.save(commentDto.toCommentEntity(userId, userNickname));
+        return commentRepository.save(commentDto.toCommentEntity(userId, userNickname, isTutor));
     }
 
     public void updateComment(CommentDto commentDto, Long userId) {
