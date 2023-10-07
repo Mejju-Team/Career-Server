@@ -27,6 +27,9 @@ public class Recomment {
     private String userNickname;
 
     @Column(nullable = false)
+    private Boolean isTutor;
+
+    @Column(nullable = false)
     private Long articleId;
 
     @Column(nullable = false)

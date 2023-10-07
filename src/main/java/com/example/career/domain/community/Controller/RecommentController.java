@@ -26,7 +26,8 @@ public class RecommentController {
     public ResponseEntity<Recomment> addRecomment(@RequestBody RecommentDto recommentDto, HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");
         String userNickname = (String) request.getAttribute("userNickname");
-        Recomment Recomment = recommentService.addRecomment(recommentDto, userId, userNickname);
+        Boolean isTutor = (Boolean) request.getAttribute("isTutor");
+        Recomment Recomment = recommentService.addRecomment(recommentDto, userId, userNickname, isTutor);
         return ResponseEntity.ok(Recomment);
     }
 

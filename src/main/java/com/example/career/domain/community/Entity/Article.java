@@ -32,6 +32,9 @@ public class Article {
     private String userNickname;
 
     @Column(nullable = false)
+    private Boolean isTutor;
+
+    @Column(nullable = false)
     private Long categoryId;
 
     @Column(columnDefinition = "VARCHAR(30)", nullable = false)

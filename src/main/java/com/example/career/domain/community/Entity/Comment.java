@@ -15,11 +15,11 @@ import java.time.LocalDateTime;
         name = "find_combined_comments_by_user_id",
         query =
                 "SELECT * FROM (" +
-                        "SELECT c.id, c.user_id, c.user_nickname, c.article_id, c.content, c.heart_cnt, c.recomment_cnt, a.title AS articleTitle, c.created_at " +
+                        "SELECT c.id, c.user_id, c.user_nickname, c.is_tutor, c.article_id, c.content, c.heart_cnt, c.recomment_cnt, a.title AS articleTitle, c.created_at " +
                         "FROM article a " +
                         "JOIN comment c ON a.id = c.article_id AND c.user_id = :userId " +
                         "UNION " +
-                        "SELECT r.id, r.user_id, r.user_nickname, r.article_id, r.content, r.heart_cnt, 0 AS recomment_cnt, a.title AS articleTitle, r.created_at " +
+                        "SELECT r.id, r.user_id, r.user_nickname, r.is_tutor, r.article_id, r.content, r.heart_cnt, 0 AS recomment_cnt, a.title AS articleTitle, r.created_at " +
                         "FROM article a " +
                         "JOIN recomment r ON a.id = r.article_id AND r.user_id = :userId" +
                         ") AS combined_results " +
@@ -35,6 +35,7 @@ import java.time.LocalDateTime;
                         @ColumnResult(name = "id", type = Long.class),
                         @ColumnResult(name = "user_id", type = Long.class),
                         @ColumnResult(name = "user_nickname", type = String.class),
+                        @ColumnResult(name = "is_tutor", type = Boolean.class),
                         @ColumnResult(name = "article_id", type = Long.class),
                         @ColumnResult(name = "content", type = String.class),
                         @ColumnResult(name = "heart_cnt", type = Integer.class),
@@ -60,6 +61,9 @@ public class Comment {
 
     @Column(nullable = false)
     private String userNickname;
+
+    @Column(nullable = false)
+    private Boolean isTutor;
 
     @Column(nullable = false)
     private Long articleId;
