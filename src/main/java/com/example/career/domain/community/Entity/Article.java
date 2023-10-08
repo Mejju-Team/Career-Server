@@ -2,6 +2,8 @@ package com.example.career.domain.community.Entity;
 
 
 import com.example.career.domain.search.Dto.CommunitySearchRespDto;
+import com.example.career.domain.user.Entity.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,15 +27,10 @@ public class Article {
     @Column(name = "id")
     private Long id;
 
-    @Column(nullable = false)
-    private Long userId;
-
-    @Column(nullable = false)
-    private String userNickname;
-
-    @Column(nullable = false)
-    private Boolean isTutor;
-
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY) // 지연 로딩 사용
+    @JoinColumn(name = "userId", referencedColumnName = "id") // 외래 키 칼럼 설정
+    private User user;
     @Column(nullable = false)
     private Long categoryId;
 
@@ -80,7 +77,7 @@ public class Article {
     public CommunitySearchRespDto toDto() {
         return CommunitySearchRespDto.builder()
                 .id(id)
-                .userId(userId)
+                .userId(user.getId())
                 .categoryId(categoryId)
                 .title(title)
                 .content(content)

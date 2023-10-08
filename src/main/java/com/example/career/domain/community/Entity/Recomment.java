@@ -1,4 +1,6 @@
 package com.example.career.domain.community.Entity;
+import com.example.career.domain.user.Entity.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,20 +22,15 @@ public class Recomment {
     @Column(name = "id")
     private Long id;
 
-    @Column(nullable = false)
-    private Long userId;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY) // 지연 로딩 사용
+    @JoinColumn(name = "userId", referencedColumnName = "id") // 외래 키 칼럼 설정
+    private User user;
 
-    @Column(nullable = false)
-    private String userNickname;
-
-    @Column(nullable = false)
-    private Boolean isTutor;
-
-    @Column(nullable = false)
-    private Long articleId;
-
-    @Column(nullable = false)
-    private Long commentId;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY) // 지연 로딩 사용
+    @JoinColumn(name = "articleId", referencedColumnName = "id") // 외래 키 칼럼 설정
+    private Article article;
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
@@ -44,6 +41,11 @@ public class Recomment {
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "commentId")
+    private Comment comment;
 
     @PrePersist
     public void prePersist() {
