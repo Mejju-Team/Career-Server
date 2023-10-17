@@ -32,9 +32,7 @@ public class CommentController {
     @PostMapping("/add")
     public ResponseEntity<Comment> addComment(@RequestBody CommentDtoReq commentDtoReq, HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");
-        String userNickname = (String) request.getAttribute("nickname");
-        Boolean isTutor = (Boolean) request.getAttribute("isTutor");
-        Comment comment = commentService.addComment(commentDtoReq, userId, userNickname, isTutor);
+        Comment comment = commentService.addComment(commentDtoReq, userId);
         return ResponseEntity.ok(comment);
     }
 
@@ -50,7 +48,7 @@ public class CommentController {
     @DeleteMapping("delete")
     public ResponseEntity<Object> deleteComment(@RequestBody CommentDtoReq commentDtoReq, HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");
-        commentService.deleteCommentByUserIdAndId(userId, commentDtoReq.getId());
+        commentService.deleteCommentByUserIdAndId(userId, commentDtoReq);
         return ResponseEntity.ok().build();
     }
 }

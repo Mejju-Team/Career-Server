@@ -39,7 +39,7 @@ public class RecommentService {
         Comment commentEntity = commentRepository.findById(recommentDtoReq.getCommentId())
                 .orElseThrow(() -> new IllegalArgumentException("Comment not found with ID: " + recommentDtoReq.getCommentId()));
 
-        commentRepository.incrementRecommentCntByIdAndUserId(recommentDtoReq.getCommentId(), userId);
+        commentRepository.incrementRecommentCntByIdAndUserId(recommentDtoReq.getCommentId());
         return recommentRepository.save(RecommentDto.toRecommentEntity(user, article, commentEntity, recommentDtoReq));
     }
 
@@ -47,8 +47,8 @@ public class RecommentService {
         recommentRepository.updateContentByIdAnduserId(recommentDtoReq.getId(), recommentDtoReq.getContent(), userId, LocalDateTime.now());
     }
     @Transactional
-    public void deleteRecommentByUserIdAndId(Long userId, Long id) {
-        commentRepository.decrementRecommentCntByIdAndUserId(id, userId);
-        recommentRepository.deleteByUserIdAndId(userId, id);
+    public void deleteRecommentByUserIdAndId(Long userId, RecommentDtoReq recommentDtoReq) {
+        commentRepository.decrementRecommentCntByIdAndUserId(recommentDtoReq.getCommentId());
+        recommentRepository.deleteByUserIdAndId(userId, recommentDtoReq.getId());
     }
 }

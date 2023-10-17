@@ -39,7 +39,7 @@ public class RecommentController {
     @DeleteMapping("delete")
     public ResponseEntity<Object> deleteRecomment(@RequestBody RecommentDtoReq dto, HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");
-        recommentService.deleteRecommentByUserIdAndId(userId, dto.getId());;
+        recommentService.deleteRecommentByUserIdAndId(userId, dto);
         return ResponseEntity.ok().build();
     }
 }
