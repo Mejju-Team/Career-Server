@@ -39,6 +39,7 @@ public class RecommentService {
         Comment commentEntity = commentRepository.findById(recommentDtoReq.getCommentId())
                 .orElseThrow(() -> new IllegalArgumentException("Comment not found with ID: " + recommentDtoReq.getCommentId()));
 
+        articleRepository.incrementArticleCommentCnt(article.getId());
         commentRepository.incrementRecommentCntByIdAndUserId(recommentDtoReq.getCommentId());
         return recommentRepository.save(RecommentDto.toRecommentEntity(user, article, commentEntity, recommentDtoReq));
     }
@@ -48,6 +49,7 @@ public class RecommentService {
     }
     @Transactional
     public void deleteRecommentByUserIdAndId(Long userId, RecommentDtoReq recommentDtoReq) {
+        articleRepository.decrementArticleCommentCnt(recommentDtoReq.getArticleId());
         commentRepository.decrementRecommentCntByIdAndUserId(recommentDtoReq.getCommentId());
         recommentRepository.deleteByUserIdAndId(userId, recommentDtoReq.getId());
     }
