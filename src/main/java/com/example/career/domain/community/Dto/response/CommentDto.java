@@ -29,7 +29,7 @@ public class CommentDto {
     private UserBrief user;
     private ArticleBrief article;
     private List<RecommentDto> recomments;
-    private Boolean isComment=true;
+    private Long commentId = -1L;
 
     public static Comment toCommentEntity(User user, Article article, CommentDtoReq dto) {
         return Comment.builder()
