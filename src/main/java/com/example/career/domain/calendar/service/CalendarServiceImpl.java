@@ -135,6 +135,25 @@ public class CalendarServiceImpl implements CalendarService{
 
     @Override
     public Boolean RegisterConsultByMentee(CalendarRegistReqDto calendarRegistReqDto) {
+        // 튜터 시간표에 상담 신청시간이 포함되는지 확인
+        TimeChanger timeChanger = new TimeChanger();
+        TutorSlot tutorSlot = null;
+        try {
+            tutorSlot = tutorSlotRepository.findTutorSlotByTutorDetailAndConsultDate(
+                    tutorDetailRepository.findByTutorId(calendarRegistReqDto.getMentorId())
+                    ,calendarRegistReqDto.getStartTime().toLocalDate());
+        }catch (NullPointerException e) {
+            System.out.println("해당 날짜를 등록하지 않았습니다.");
+            return false;
+        }
+        byte[] newBytes = timeChanger.dateTimeToByte(calendarRegistReqDto.getStartTime(), calendarRegistReqDto.getEndTime());
+
+        // 신청 시간이 멘토 상담 가능 시간 내에 포함되는지 확인
+        if(!timeChanger.checkIndexesInOldForOnesInNew(tutorSlot.getPossibleTime(), newBytes)) {
+            System.out.println("상담 가능 시간대에 포함되어있지 않습니다.");
+            return false;
+        }
+
         try{
             Consult consult = calendarRegistReqDto.toEntityConsult();
             consult.setMentor(userRepository.findById(calendarRegistReqDto.getMentorId()).get());
@@ -177,12 +196,11 @@ public class CalendarServiceImpl implements CalendarService{
             tutorSlot.setTutorDetail(tutorDetail);
             tutorSlot.setConsultDate(date);
             tutorSlot.setPossibleTime(newBytes);
-            System.out.println("TTTT"+tutorSlot);
             tutorSlotRepository.save(tutorSlot);
         }else {
             // 기존 Slot에 Time 수정
             byte[] oldBytes = tutorSlot.getPossibleTime();
-            byte[] resultBytes = timeChanger.combineBytesWithXOR(newBytes,oldBytes,0);
+            byte[] resultBytes = timeChanger.combineBytesWithXOR(newBytes,oldBytes,false);
             if (resultBytes == null) {
                 System.out.println("중복된 시간 체크섬 오류");
                 return false; // 체크섬 오류
@@ -235,7 +253,7 @@ public class CalendarServiceImpl implements CalendarService{
         byte[] newBytes = timeChanger.dateTimeToByte(calendarMentorPossibleReqDto.getStart(), calendarMentorPossibleReqDto.getEnd());
         // 기존 Slot에 Time 수정
         byte[] oldBytes = tutorSlot.getPossibleTime();
-        byte[] resultBytes = timeChanger.combineBytesWithXOR(newBytes,oldBytes,1);
+        byte[] resultBytes = timeChanger.combineBytesWithXOR(newBytes,oldBytes,true);
         if (resultBytes == null) {
             System.out.println("중복된 시간 체크섬 오류");
             return false; // 체크섬 오류
