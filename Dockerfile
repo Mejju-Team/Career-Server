@@ -8,6 +8,6 @@ RUN echo -e "distributionBase=GRADLE_USER_HOME\ndistributionPath=wrapper/dists\n
 
 RUN mkdir src/main/resources
 
-COPY ../../../jenkins src/main/resources
+RUN cp /var/jenkins/*es src/main/resources
 
 ENTRYPOINT ["java","-jar","/app.jar"]
