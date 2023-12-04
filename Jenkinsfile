@@ -6,16 +6,6 @@ pipeline {
         registryCredential = 'docker-hub'
         dockerImage = ''
     }
-    node {
-      stage('SCM') {
-        checkout scm
-      }
-      stage('SonarQube Analysis') {
-        withSonarQubeEnv() {
-          sh "./gradlew sonar"
-        }
-      }
-    }
 
     stages {
         stage('Prepare') {
@@ -32,6 +22,14 @@ pipeline {
            	 failure {
                error 'This pipeline stops here...'
              }
+          }
+        }
+        stage('SCM') {
+            checkout scm
+          }
+        stage('SonarQube Analysis') {
+          withSonarQubeEnv() {
+            sh "./gradlew sonar"
           }
         }
 
