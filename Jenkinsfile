@@ -6,6 +6,16 @@ pipeline {
         registryCredential = 'docker-hub'
         dockerImage = ''
     }
+    node {
+      stage('SCM') {
+        checkout scm
+      }
+      stage('SonarQube Analysis') {
+        withSonarQubeEnv() {
+          sh "./gradlew sonar"
+        }
+      }
+    }
 
     stages {
         stage('Prepare') {
