@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
     private final TutorDetailRepository tutorDetailRepository;
+    private final StudentDetailRepository studentDetailRepository;
     private final SchoolRepository schoolRepository;
     private final TagRepository tagRepository;
     private final CareerRepository careerRepository;
@@ -58,7 +59,7 @@ public class UserServiceImpl implements UserService{
 
     @Transactional
     @Override
-    public SignUpReqDto signup(SignUpReqDto signUpReqDto) {
+    public SignUpReqDto signupTutor(SignUpReqDto signUpReqDto) {
         if (userRepository.findOneWithAuthoritiesByUsername(signUpReqDto.getUsername()).orElse(null) != null) {
             throw new DuplicateMemberException("이미 가입되어 있는 유저입니다.");
         }
@@ -83,6 +84,29 @@ public class UserServiceImpl implements UserService{
         return SignUpReqDto.from(user);
     }
 
+    @Transactional
+    @Override
+    public SignUpReqDto signupStudent(SignUpReqDto signUpReqDto) {
+        if (userRepository.findOneWithAuthoritiesByUsername(signUpReqDto.getUsername()).orElse(null) != null) {
+            throw new DuplicateMemberException("이미 가입되어 있는 유저입니다.");
+        }
+        signUpReqDto.setPassword(passwordEncoder.encode(signUpReqDto.getPassword()));
+
+        Authority authority = Authority.builder()
+                .authorityName("ROLE_USER")
+                .build();
+
+        User user = signUpReqDto.toUserEntity(Collections.singleton(authority));
+        user = userRepository.save(user);
+
+        Long id = user.getId();
+
+        StudentDetail studentDetail = signUpReqDto.toStudentDetailEntity(id);
+        studentDetailRepository.save(studentDetail);
+
+        return SignUpReqDto.from(user);
+    }
+
     @Override
     public User getUserByUsername(String username) throws Exception {
         User user = userRepository.findByUsername(username)
@@ -92,14 +116,14 @@ public class UserServiceImpl implements UserService{
 
     @Transactional
     @Override
-    public void modifyProfile(SignUpReqDto signUpReqDto, String username) throws Exception {
+    public void modifyProfileTutor(SignUpReqDto signUpReqDto, String username) throws Exception {
         User user = getUserByUsername(username);
 
         Long id = user.getId();
 
         TutorDetail tutorDetail = tutorDetailRepository.findByTutorId(id);
 
-        Set<String> userFields = new HashSet<>(Arrays.asList("name", "username", "birth", "nickname", "telephone", "password", "gender", "introduce", "hobby", "profileImg"));
+        Set<String> userFields = new HashSet<>(Arrays.asList("email", "name", "username", "birth", "nickname", "telephone", "password", "gender", "introduce", "hobby", "profileImg"));
         Set<String> tutorDetailFields = new HashSet<>(Arrays.asList("consultMajor1", "consultMajor2", "consultMajor3"));
 
         updateEntityFields(user, signUpReqDto, userFields, false);
@@ -145,6 +169,22 @@ public class UserServiceImpl implements UserService{
 
         //TODO: List<MultipartFile> activeImg 저장해야함.
         
+    }
+
+    @Transactional
+    @Override
+    public void modifyProfileStudent(SignUpReqDto signUpReqDto, String username) throws Exception {
+        User user = getUserByUsername(username);
+
+        Long id = user.getId();
+
+        StudentDetail studentDetail = studentDetailRepository.findByStudentId(id);
+
+        Set<String> userFields = new HashSet<>(Arrays.asList("email", "name", "username", "birth", "nickname", "telephone", "password", "gender", "introduce", "hobby", "profileImg"));
+        Set<String> studentDetailFields = new HashSet<>(Arrays.asList("interestingMajor1", "interestingMajor2", "interestingMajor3"));
+
+        updateEntityFields(user, signUpReqDto, userFields, false);
+        updateEntityFields(studentDetail, signUpReqDto, studentDetailFields, false);
     }
 
     private <T, DTO> void updateEntityFields(T entity, DTO dto, Set<String> fieldsToCheck, boolean skip) {
