@@ -187,20 +187,18 @@ public class UserController {
     //{"username": "ss", "temp": "sssss"}
     // username 중복확인
     @PostMapping("valid/username")
-    public ValidCheck validUsername(@RequestBody SignUpReqDto signUpReqDto) {
+    public ResponseEntity<Boolean> validUsername(@RequestBody SignUpReqDto signUpReqDto) {
         boolean isValid = userService.validUsername(signUpReqDto.getUsername());
-        ValidCheck validCheck = new ValidCheck(isValid);
         
-        return validCheck;
+        return ResponseEntity.ok(isValid);
     }
 
     // nickname 중복확인
     @PostMapping("valid/nickname")
-    public ValidCheck validNickname(@RequestBody SignUpReqDto signUpReqDto) {
+    public ResponseEntity<Boolean> validNickname(@RequestBody SignUpReqDto signUpReqDto) {
         boolean isValid = userService.validNickname(signUpReqDto.getNickname());
-        ValidCheck validCheck = new ValidCheck(isValid);
 
-        return validCheck;
+        return ResponseEntity.ok(isValid);
     }
 
     // telephone 중복확인
