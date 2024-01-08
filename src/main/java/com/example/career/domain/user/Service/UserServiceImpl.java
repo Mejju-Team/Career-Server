@@ -247,7 +247,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public boolean validUsername(String username) {
 
-        if (userRepository.findByUsername(username)==null) return true;
+        if (userRepository.findByUsername(username).orElse(null) == null) return true;
         return false;
     }
 
