@@ -9,6 +9,7 @@ import com.example.career.domain.user.Exception.PasswordWrongException;
 import com.example.career.domain.user.Exception.UsernameWrongException;
 import com.example.career.domain.user.Repository.*;
 import com.example.career.domain.user.Util.SecurityUtil;
+import com.example.career.global.time.KoreaTime;
 import com.example.career.global.utils.S3Uploader;
 import lombok.AllArgsConstructor;
 
@@ -117,7 +118,13 @@ public class UserServiceImpl implements UserService{
     @Transactional
     @Override
     public void modifyProfileTutor(SignUpReqDto signUpReqDto, String username) throws Exception {
+        if (signUpReqDto.getPassword() != null) {
+//            System.out.println("여기여기여기여기 = " + passwordEncoder.encode(signUpReqDto.getPassword()));
+            signUpReqDto.setPassword(passwordEncoder.encode(signUpReqDto.getPassword()));
+        }
+
         User user = getUserByUsername(username);
+        user.setUpdatedAt(KoreaTime.now());
 
         Long id = user.getId();
 
@@ -128,8 +135,6 @@ public class UserServiceImpl implements UserService{
 
         updateEntityFields(user, signUpReqDto, userFields, false);
         updateEntityFields(tutorDetail, signUpReqDto, tutorDetailFields, false);
-
-
 
         List<SchoolDto> schoolList = signUpReqDto.getSchoolList();
         List<TagDto> tagList = signUpReqDto.getTagList();
@@ -174,7 +179,12 @@ public class UserServiceImpl implements UserService{
     @Transactional
     @Override
     public void modifyProfileStudent(SignUpReqDto signUpReqDto, String username) throws Exception {
+        if (signUpReqDto.getPassword() != null) {
+            signUpReqDto.setPassword(passwordEncoder.encode(signUpReqDto.getPassword()));
+        }
+
         User user = getUserByUsername(username);
+        user.setUpdatedAt(KoreaTime.now());
 
         Long id = user.getId();
 
