@@ -131,7 +131,7 @@ public class UserServiceImpl implements UserService{
         TutorDetail tutorDetail = tutorDetailRepository.findByTutorId(id);
 
         Set<String> userFields = new HashSet<>(Arrays.asList("email", "name", "username", "birth", "nickname", "telephone", "password", "gender", "introduce", "hobby", "profileImg"));
-        Set<String> tutorDetailFields = new HashSet<>(Arrays.asList("consultMajor1", "consultMajor2", "consultMajor3"));
+        Set<String> tutorDetailFields = new HashSet<>(Arrays.asList("consultMajor1", "consultMajor2", "consultMajor3", "myLife"));
 
         updateEntityFields(user, signUpReqDto, userFields, false);
         updateEntityFields(tutorDetail, signUpReqDto, tutorDetailFields, false);

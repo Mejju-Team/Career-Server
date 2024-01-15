@@ -37,6 +37,9 @@ public class TutorDetail {
     private int cash = 0;
 
     @Column(columnDefinition = "MEDIUMTEXT")
+    private String myLife;
+
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String portfileImg;
 
     @Column(columnDefinition = "MEDIUMTEXT")
