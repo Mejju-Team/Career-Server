@@ -1,9 +1,11 @@
 package com.example.career.domain.user.Entity;
 
+import com.example.career.domain.community.Dto.Brief.UserBriefWithRate;
 import com.example.career.domain.user.Repository.UserRepository;
 import com.example.career.global.time.KoreaTime;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
@@ -45,6 +47,12 @@ public class TutorDetail {
     @Column(columnDefinition = "MEDIUMTEXT")
     private String consultMethod;
 
+    @ColumnDefault("0")
+    private int rateCount;
+
+    @ColumnDefault("0.0")
+    private float rateAvg;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -53,4 +61,10 @@ public class TutorDetail {
         this.createdAt = KoreaTime.now();
         this.updatedAt = this.createdAt;
     }
+
+//    public UserBriefWithRate UserBriefWithRate() {
+//        return UserBriefWithRate.builder()
+//
+//                .build();
+//    }
 }
