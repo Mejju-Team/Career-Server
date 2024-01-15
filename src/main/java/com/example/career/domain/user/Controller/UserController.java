@@ -75,6 +75,7 @@ public class UserController {
             signUpReqDto.setConsultMajor1(tutorDetail.getConsultMajor1());
             signUpReqDto.setConsultMajor2(tutorDetail.getConsultMajor2());
             signUpReqDto.setConsultMajor3(tutorDetail.getConsultMajor3());
+            signUpReqDto.setMyLife(tutorDetail.getMyLife());
 
             List<School> schoolList = schoolService.getSchoolByTutorId(id);
             List<Tag> tagList = tagService.getTagByTutorId(id);

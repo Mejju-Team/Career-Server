@@ -48,6 +48,8 @@ public class SignUpReqDto {
     private String consultMajor2;
     private String consultMajor3;
 
+    private String myLife;
+
     private String plan; // 커리어 모ㅗㄱㄱ표
 
     private List<SchoolDto> schoolList;
@@ -96,6 +98,7 @@ public class SignUpReqDto {
                 .consultMajor1(consultMajor1)
                 .consultMajor2(consultMajor2)
                 .consultMajor3(consultMajor3)
+                .myLife(myLife)
                 .build();
     }
 
@@ -113,6 +116,7 @@ public class SignUpReqDto {
                 .hobby(user.getHobby())
                 .birth(user.getBirth())
                 .telephone(user.getTelephone())
+                .introduce(user.getIntroduce())
                 .authorityDtoSet(user.getAuthorities().stream()
                         .map(authority -> AuthorityDto.builder().authorityName(authority.getAuthorityName()).build())
                         .collect(Collectors.toSet()))
