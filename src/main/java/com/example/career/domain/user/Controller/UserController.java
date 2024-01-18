@@ -133,14 +133,17 @@ public class UserController {
 
         // JSON 데이터 추출
         String jsonStr = request.getParameter("json");
-        SignUpReqDto user = new ObjectMapper().readValue(jsonStr, SignUpReqDto.class);
 
         if (multipartFile != null) {
             String url = userService.uploadProfile(multipartFile);
-            user.setProfileImg(url);
+            userAop.setProfileImg(url);
         }
 
-        userService.modifyProfileTutor(user, username);
+        // JSON 값이 없을 경우 예외 처리
+        if (jsonStr != null && !jsonStr.isEmpty()) {
+            SignUpReqDto signUpReqDto = new ObjectMapper().readValue(jsonStr, SignUpReqDto.class);
+            userService.modifyProfileTutor(signUpReqDto, username);
+        }
         
         return ResponseEntity.ok(null);
     }
@@ -157,14 +160,16 @@ public class UserController {
 
         // JSON 데이터 추출
         String jsonStr = request.getParameter("json");
-        SignUpReqDto user = new ObjectMapper().readValue(jsonStr, SignUpReqDto.class);
 
         if (multipartFile != null) {
             String url = userService.uploadProfile(multipartFile);
-            user.setProfileImg(url);
+            userAop.setProfileImg(url);
         }
 
-        userService.modifyProfileStudent(user, username);
+        if (jsonStr != null && !jsonStr.isEmpty()) {
+            SignUpReqDto signUpReqDto = new ObjectMapper().readValue(jsonStr, SignUpReqDto.class);
+            userService.modifyProfileStudent(signUpReqDto, username);
+        }
 
         return ResponseEntity.ok(null);
     }
