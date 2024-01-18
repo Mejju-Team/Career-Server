@@ -110,6 +110,7 @@ public class SignUpReqDto {
                 .email(user.getEmail())
                 .username(user.getUsername())
                 .nickname(user.getNickname())
+                .profileImg(user.getProfileImg())
                 .isTutor(user.getIsTutor())
                 .password(user.getPassword())
                 .gender(user.getGender())
