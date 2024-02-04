@@ -63,7 +63,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests()
 //                .requestMatchers("/test", "/api/hello", "/api/authenticate", "/user/signup").permitAll()
-                .requestMatchers("/user/signup/*", "/user/valid/*", "/user/file/*","/consultation/*",
+                .requestMatchers("/user/signup/*", "/user/valid/*","/user/card/*", "/user/file/*","/consultation/*",
                         "/api/authenticate","/file/delete", "/major/*").permitAll()
                 .anyRequest().authenticated()
 
