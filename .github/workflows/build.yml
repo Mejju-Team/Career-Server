@@ -1,10 +1,11 @@
 name: Build
 on:
-  workflow_run:
-    workflows: ["scan"]
-    types:
-      - completed
-
+  push:
+    branches:
+      - main
+    paths-ignore:
+    - '.github/workflows/**' 
+    - 'yaml/**'
 jobs:
   build:
     name: Build
