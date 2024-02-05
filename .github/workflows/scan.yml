@@ -17,18 +17,18 @@ jobs:
       with:
         fetch-depth: 0
 
-    # - name: Cache SonarQube packages
-    #   uses: actions/cache@v1
-    #   with:
-    #     path: ~/.sonar/cache
-    #     key: ${{ runner.os }}-sonar
-    #     restore-keys: ${{ runner.os }}-sonar
-
     - name: Create sonar properties
       run: |
         touch ./sonar-project.properties
         echo '${{ secrets.SONAR_PROPERTIES }}' >> ./sonar-project.properties       
         
+#     - name: Cache SonarQube packages
+#       uses: actions/cache@v1
+#       with:
+#         path: ~/.sonar/cache
+#         key: ${{ runner.os }}-sonar
+#         restore-keys: ${{ runner.os }}-sonar
+
     - name: SonarQube Scan
       uses: sonarsource/sonarqube-scan-action@v1.0.0
       env:
@@ -36,14 +36,14 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       
     - name: Notify Discord on Failure
-      if: failure() && steps.sonarqube.outcome == 'failure'
+      if: failure() 
       uses: Sniddl/discord-commits@v1.6
       with:
           message: "SonarQube 분석에 실패했습니다. ${{ github.run_id }}"
           webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
     - name: Notify Discord on succeeded
-      if: success() && steps.sonarqube.outcome == 'success'
+      if: success()
       uses: Sniddl/discord-commits@v1.6
       with:
           message: "SonarQube 분석에 성공했습니다. ${{ github.run_id }}"
