@@ -33,10 +33,10 @@ jobs:
     - name: SonarQube Scan
       uses: sonarsource/sonarqube-scan-action@master
       with:
-        sonarHost: ${{ secrets.SONAR_HOST_URL }}
-        sonarToken: ${{ secrets.SONAR_TOKEN }}
-        projectBaseDir: '/github/workspace'
-      id: sonarqube
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #   projectBaseDir: '/github/workspace'
+      # id: sonarqube
       
     - name: Notify Discord on Failure
       if: failure() && steps.sonarqube.outcome == 'failure'
