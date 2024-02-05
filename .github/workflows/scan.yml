@@ -17,13 +17,23 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: Create application.properties
+      run: |
+        touch ./src/main/resources/application.properties
+        echo '${{ secrets.PROPERTIES }}' >> ./src/main/resources/application.properties        
+
+    - name: Create sonar properties
+      run: |
+        touch ./sonar-project.properties
+        echo '${{ secrets.SONAR_PROPERTIES }}' >> ./sonar-project.properties       
+        
     - name: Cache SonarQube packages
       uses: actions/cache@v1
       with:
         path: ~/.sonar/cache
         key: ${{ runner.os }}-sonar
         restore-keys: ${{ runner.os }}-sonar
-          
+
     - name: SonarQube Scan
       uses: sonarsource/sonarqube-scan-action@v1.0.0
       env:
