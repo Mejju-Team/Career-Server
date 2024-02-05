@@ -35,8 +35,8 @@ jobs:
       with:
         sonarHost: ${{ secrets.SONAR_HOST_URL }}
         sonarToken: ${{ secrets.SONAR_TOKEN }}
-      #   projectBaseDir: '/github/workspace'
-      # id: sonarqube
+        projectBaseDir: '/github/workspace'
+      id: sonarqube
       
     - name: Notify Discord on Failure
       if: failure() && steps.sonarqube.outcome == 'failure'
