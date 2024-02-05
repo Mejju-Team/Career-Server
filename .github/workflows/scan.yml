@@ -25,8 +25,8 @@ jobs:
     #     restore-keys: ${{ runner.os }}-sonar
           
     - name: SonarQube Scan
-      uses: sonarsource/sonarqube-scan-action@v1.0.0
-      with:
+      uses: sonarsource/sonarqube-scan-action@master
+      env:
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       
