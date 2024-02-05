@@ -1,11 +1,9 @@
 name: Build
 on:
-  push:
-    branches:
-      - main # or the name of your main branch
-    paths-ignore:
-    - '.github/workflows/**' 
-    - 'yaml/**'
+  workflow_run:
+    workflows: ["scan"]
+    types:
+      - completed
 
 jobs:
   build:
@@ -21,12 +19,12 @@ jobs:
           java-version: 17
           distribution: temurin
           
-      - name: Cache SonarQube packages
-        uses: actions/cache@v1
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
+      # - name: Cache SonarQube packages
+      #   uses: actions/cache@v1
+      #   with:
+      #     path: ~/.sonar/cache
+      #     key: ${{ runner.os }}-sonar
+      #     restore-keys: ${{ runner.os }}-sonar
           
       - name: Create application.properties
         run: |
@@ -39,10 +37,12 @@ jobs:
           echo "distributionUrl=https\://services.gradle.org/distributions/gradle-7.6-all.zip" >> ./gradle/wrapper/gradle-wrapper.properties
           echo "zipStoreBase=GRADLE_USER_HOME" >> ./gradle/wrapper/gradle-wrapper.properties
           echo "zipStorePath=wrapper/dists" >> ./gradle/wrapper/gradle-wrapper.properties
+          
      # IP 추출
       - name: Get Github Actions IP
         id: ip
         uses: haythem/public-ip@v1.2
+        
      # AWS Credencials
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -50,6 +50,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_JM_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_JM_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
+          
       # RDS 보안그룹 생성
       - name: Add Github Actions IP to Security group
         run: |
@@ -80,13 +81,18 @@ jobs:
             ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ steps.cache.outputs.new }}
           restore-keys: ${{ runner.os }}-gradle-
-    
-      - name: Build and analyze
+
+      - name: Build project
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: ./gradlew build sonarqube --info
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed for operations that require GitHub authentication, if any
+        run: ./gradlew build --info
+
+      # - name: Build and analyze
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      #   run: ./gradlew build sonarqube --info
         
       - name: Delete Previous Gradle Cache
         run: |
