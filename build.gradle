@@ -6,8 +6,8 @@ plugins {
 }
 sonar {
     properties {
-        property "sonar.projectKey", "Carry-A-Way_Career-Server_AYwyf8l2EqkAxc_3B7Ws"
-        property "sonar.projectName", "Career-Server"
+        property "sonar.projectKey", "claire-eee_Career-Server"
+        property "sonar.projectName", "career"
     }
 }
 
