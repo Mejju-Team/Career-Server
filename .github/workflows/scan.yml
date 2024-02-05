@@ -31,14 +31,14 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       
     - name: Notify Discord on Failure
-      if: failure() && steps.sonarqube.outcome == 'failure'
+      if: failure() 
       uses: Sniddl/discord-commits@v1.6
       with:
           message: "SonarQube 분석에 실패했습니다. ${{ github.run_id }}"
           webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
     - name: Notify Discord on succeeded
-      if: success() && steps.sonarqube.outcome == 'success'
+      if: success()
       uses: Sniddl/discord-commits@v1.6
       with:
           message: "SonarQube 분석에 성공했습니다. ${{ github.run_id }}"
