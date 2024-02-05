@@ -31,6 +31,7 @@ jobs:
         run: |
           touch ./src/main/resources/application.properties
           echo '${{ secrets.PROPERTIES }}' >> ./src/main/resources/application.properties
+          
       - name: gradle-wrapper properties
         run: |
           echo "distributionBase=GRADLE_USER_HOME" > ./gradle/wrapper/gradle-wrapper.properties
