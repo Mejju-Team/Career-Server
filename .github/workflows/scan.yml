@@ -23,7 +23,12 @@ jobs:
     #     path: ~/.sonar/cache
     #     key: ${{ runner.os }}-sonar
     #     restore-keys: ${{ runner.os }}-sonar
-          
+
+    - name: Create sonar properties
+      run: |
+        touch ./sonar-project.properties
+        echo '${{ secrets.SONAR_PROPERTIES }}' >> ./sonar-project.properties       
+        
     - name: SonarQube Scan
       uses: sonarsource/sonarqube-scan-action@v1.0.0
       env:
