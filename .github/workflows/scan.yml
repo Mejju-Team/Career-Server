@@ -1,6 +1,6 @@
 name: scan 
 on:
-  push:
+  pull_request:
     branches:
       - main # or the name of your main branch
     types: [opened, synchronize, reopened]
