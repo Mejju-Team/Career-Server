@@ -1,0 +1,53 @@
+name: scan 
+on:
+  push:
+    branches:
+      - main # or the name of your main branch
+    types: [opened, synchronize, reopened]
+    paths-ignore:
+    - '.github/workflows/**' 
+    - 'yaml/**'
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        
+    - name: Set up JDK 17
+      uses: actions/setup-java@v1
+      with:
+        java-version: 17
+        distribution: temurin
+          
+    - name: Cache SonarQube packages
+      uses: actions/cache@v1
+      with:
+        path: ~/.sonar/cache
+        key: ${{ runner.os }}-sonar
+        restore-keys: ${{ runner.os }}-sonar
+          
+    - name: SonarQube Scan
+      uses: sonarsource/sonarqube-scan-action@master
+      with:
+        sonarHost: ${{ secrets.SONAR_HOST_URL }}
+        sonarToken: ${{ secrets.SONAR_TOKEN }}
+      #   projectBaseDir: '/github/workspace'
+      # id: sonarqube
+      
+    - name: Notify Discord on Failure
+      if: failure() && steps.sonarqube.outcome == 'failure'
+      uses: Sniddl/discord-commits@v1.6
+      with:
+          message: "SonarQube 분석에 실패했습니다. ${{ github.run_id }}"
+          webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+    - name: Notify Discord on succeeded
+      if: success() && steps.sonarqube.outcome == 'success'
+      uses: Sniddl/discord-commits@v1.6
+      with:
+          message: "SonarQube 분석에 성공했습니다. ${{ github.run_id }}"
+          webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}    
