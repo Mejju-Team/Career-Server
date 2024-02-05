@@ -4,9 +4,9 @@ on:
     branches:
       - main # or the name of your main branch
     types: [opened, synchronize, reopened]
-    paths-ignore:
-    - '.github/workflows/**' 
-    - 'yaml/**'
+    # paths-ignore:
+    # - '.github/workflows/**' 
+    # - 'yaml/**'
     
 jobs:
   build:
