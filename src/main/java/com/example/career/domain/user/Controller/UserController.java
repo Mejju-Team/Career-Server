@@ -114,8 +114,8 @@ public class UserController {
 
             StudentDetail studentDetail = studentDetailService.getStudentDetailByStudentId(id);
             signUpReqDto.setInterestingMajor1(studentDetail.getInterestingMajor1());
-            signUpReqDto.setInterestingMajor1(studentDetail.getInterestingMajor2());
-            signUpReqDto.setInterestingMajor1(studentDetail.getInterestingMajor3());
+            signUpReqDto.setInterestingMajor2(studentDetail.getInterestingMajor2());
+            signUpReqDto.setInterestingMajor3(studentDetail.getInterestingMajor3());
 
             List<Tag> tagList = tagService.getTagByUserId(id);
             List<TagDto> tagDtoList = tagList.stream().map(TagDto::from)
