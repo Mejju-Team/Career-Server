@@ -1,12 +1,19 @@
 name: SCAN 
 on:
-  pull_request:
+  push:
     branches:
-      - main # or the name of your main branch
-    types: [opened, synchronize, reopened]
-    paths-ignore:
-    - '.github/workflows/**' 
-    - 'yaml/**'
+      - main
+    # paths-ignore:
+    # - '.github/workflows/**' 
+    # - 'yaml/**'
+# on:
+#   pull_request:
+#     branches:
+#       - main # or the name of your main branch
+#     types: [opened, synchronize, reopened]
+#     paths-ignore:
+#     - '.github/workflows/**' 
+#     - 'yaml/**'
     
 jobs:
   build:
