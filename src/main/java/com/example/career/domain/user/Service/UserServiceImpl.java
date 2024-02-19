@@ -1,7 +1,9 @@
 package com.example.career.domain.user.Service;
 
 import com.example.career.domain.community.Dto.Brief.UserBriefWithRate;
+import com.example.career.domain.consult.Entity.Review;
 import com.example.career.domain.consult.Repository.ConsultRepository;
+import com.example.career.domain.consult.Repository.ReviewRepository;
 import com.example.career.domain.user.Dto.*;
 import com.example.career.domain.user.Entity.*;
 import com.example.career.domain.user.Exception.DuplicateMemberException;
@@ -17,6 +19,7 @@ import lombok.AllArgsConstructor;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -37,6 +40,9 @@ public class UserServiceImpl implements UserService{
     private final PasswordEncoder passwordEncoder;
     private final ConsultRepository consultRepository;
     private final S3Uploader s3Uploader;
+    private final ReviewRepository reviewRepository;
+    private final FAQRepository faqRepository;
+
     @Override
     public User signIn(UserReqDto userReqDto) {
         String username = userReqDto.getUsername();
@@ -143,6 +149,14 @@ public class UserServiceImpl implements UserService{
         modifyMentorTagList(tagList, id);
         modifyMentorCareerList(careerList, id);
         modifyMentorSchoolList(schoolList, id);
+
+        // FAQ 저장
+        List<FAQ> updatedFaqs = signUpReqDto.getFAQ().stream().map(faq -> {
+            faq.setTutorId(id); // tutorId 설정
+            return faq;
+        }).collect(Collectors.toList());
+        faqRepository.saveAll(updatedFaqs);
+
 //        // SchoolList, TagList, CareerList에 대해 업데이트
 //        EntityUtils.processEntities(
 //                signUpReqDto.getSchoolList(),
@@ -346,6 +360,23 @@ public class UserServiceImpl implements UserService{
 
         }catch (NullPointerException e) {
             userBriefWithRate.setSchoolList(null);
+        }
+        try{
+            userBriefWithRate.setReview(
+                    reviewRepository.findAllByTutorDetailOrderByCreatedAt(
+                            tutorDetailRepository.findByTutorId(
+                                    userBriefWithRate.getId()
+                            )
+                    ).stream().map(Review::toRespDto).toList()
+            );
+        }catch(NullPointerException e) {
+            userBriefWithRate.setReview(null);
+        }
+        try{
+            userBriefWithRate.setFAQ(faqRepository.findAllByTutorIdOrderById(userId));
+
+        }catch (NullPointerException e) {
+            userBriefWithRate.setFAQ(null);
         }
         return userBriefWithRate;
     }

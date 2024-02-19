@@ -1,5 +1,7 @@
 package com.example.career.domain.community.Dto.Brief;
 
+import com.example.career.domain.consult.Dto.ReviewRespDto;
+import com.example.career.domain.user.Entity.FAQ;
 import com.example.career.domain.user.Entity.School;
 import com.example.career.domain.user.Entity.TutorDetail;
 import com.example.career.domain.user.Entity.User;
@@ -31,6 +33,8 @@ public class UserBriefWithRate {
     private String consultMethod;
 
     private List<School> schoolList;
+    private List<ReviewRespDto> review;
+    private List<FAQ> FAQ;
 
 
     public UserBriefWithRate(User user, TutorDetail tutorDetail) {
