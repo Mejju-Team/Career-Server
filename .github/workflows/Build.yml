@@ -26,6 +26,7 @@ jobs:
       #     path: ~/.sonar/cache
       #     key: ${{ runner.os }}-sonar
       #     restore-keys: ${{ runner.os }}-sonar
+
           
       - name: Create application.properties
         run: |
