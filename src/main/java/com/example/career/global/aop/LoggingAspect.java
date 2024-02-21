@@ -38,6 +38,10 @@ public class LoggingAspect {
         // HttpServletRequest를 얻습니다.
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
 
+        // health check는 로그 저장 X
+        if (request.getRequestURI().equals("/health")) {
+            return joinPoint.proceed();
+        }
         // 클라이언트 IP와 사용자 에이전트를 추출합니다.
         // 클라이언트 실제 IP 추출 로직 수정
         String clientIpAddress = request.getHeader("X-Real-IP");
