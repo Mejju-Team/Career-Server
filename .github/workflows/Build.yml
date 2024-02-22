@@ -3,9 +3,9 @@ on:
   push:
     branches:
       - main
-    # paths-ignore:
-    # - '.github/workflows/**' 
-    # - 'yaml/**'
+    paths-ignore:
+    - '.github/workflows/**' 
+    - 'yaml/**'
 jobs:
   build:
     name: Build
