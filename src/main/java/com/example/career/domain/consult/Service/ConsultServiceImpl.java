@@ -225,6 +225,6 @@ public class ConsultServiceImpl implements ConsultService{
             consult.setReason("멘토가 상담을 수락하지 않았습니다. (시간 초과)");
             consultRepository.save(consult);
         });
-        return  ResponseEntity.ok("상담 수락 안해서 취소된 상담 갯수 : "+ consultations.size());
+        return  ResponseEntity.ok("Canceled Consultation cuz timeover : "+ consultations.size());
     }
 }
