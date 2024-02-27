@@ -273,18 +273,36 @@ public class UserController {
     }
 
     // 멘토카드 (상세보기)
+    @Authenticated
     @GetMapping("card")
-    public ResponseEntity<?> getUsersCardData(@RequestParam Long userId) {
-        UserBriefWithRate userBriefWithRate = userService.getUserCardData(userId);
+    public ResponseEntity<?> getUsersCardData(HttpServletRequest request, @RequestParam Long userId) {
+        User user = (User) request.getAttribute("user");
+        UserBriefWithRate userBriefWithRate = userService.getUserCardData(user.getId(), userId);
 
         // 객체가 null인 경우 확인
         if (userBriefWithRate == null) {
             // null인 경우 No Content 상태 코드 반환
-            return new ResponseEntity<>("멘토 ID를 다시 확인해주세요.", HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().body("멘토 ID를 다시 확인해주세요.");
         }
 
         // 데이터가 있는 경우, 정상적으로 반환
         return ResponseEntity.ok(userBriefWithRate);
     }
 
+    // 멘티-멘토 좋아요
+    @Authenticated
+    @PostMapping("mentee/heart/insert")
+    public ResponseEntity<?> menteeClickedHeart(HttpServletRequest request, @RequestParam Long mentorId) {
+        User user = (User) request.getAttribute("user");
+
+        return userService.insertHeart(user, mentorId);
+    }
+
+    @Authenticated
+    @PostMapping("mentee/heart/delete")
+    public ResponseEntity<?> menteeUnClickedHeart(HttpServletRequest request, @RequestParam Long mentorId) {
+        User user = (User) request.getAttribute("user");
+
+        return userService.deleteHeart(user, mentorId);
+    }
 }
