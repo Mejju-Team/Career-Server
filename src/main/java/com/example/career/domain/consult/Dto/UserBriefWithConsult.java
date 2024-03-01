@@ -1,9 +1,8 @@
-package com.example.career.domain.community.Dto.Brief;
+package com.example.career.domain.consult.Dto;
 
-import com.example.career.domain.consult.Dto.ReviewRespDto;
 import com.example.career.domain.user.Entity.*;
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,7 +11,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserBriefWithRate {
+@Builder
+public class UserBriefWithConsult {
     private Long id;
     private String name;
     private String nickname;
@@ -29,14 +29,11 @@ public class UserBriefWithRate {
     private String consultMajor3;
     private String consultMethod;
 
-    private List<School> schoolList;
-    private List<ReviewRespDto> review;
-    private List<FAQ> FAQ;
-    private List<Career> career;
+    private BriefConsultRespDto briefConsultRespDto;
     private Boolean heart;
     private int wage;
 
-    public UserBriefWithRate(User user, TutorDetail tutorDetail) {
+    public UserBriefWithConsult(User user, TutorDetail tutorDetail) {
         this.id = user.getId();
         this.name = user.getName();
         this.nickname = user.getNickname();

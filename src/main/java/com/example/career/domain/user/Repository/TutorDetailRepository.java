@@ -1,6 +1,7 @@
 package com.example.career.domain.user.Repository;
 
 import com.example.career.domain.community.Dto.Brief.UserBriefWithRate;
+import com.example.career.domain.consult.Dto.UserBriefWithConsult;
 import com.example.career.domain.user.Entity.TutorDetail;
 import com.example.career.domain.user.Entity.User;
 import org.springframework.data.domain.Page;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface TutorDetailRepository extends JpaRepository<TutorDetail,Long> {
+public interface TutorDetailRepository extends JpaRepository<TutorDetail,Long>{
     public TutorDetail findByTutorId(Long id);
     // rateCount에 따라 내림차순으로 정렬하면서 키워드에 맞는 TutorDetail 찾기
     @Query("SELECT new com.example.career.domain.community.Dto.Brief.UserBriefWithRate(u, t) " +
@@ -33,6 +34,10 @@ public interface TutorDetailRepository extends JpaRepository<TutorDetail,Long> {
             "WHERE (t.tutorId = :userId) ")
     UserBriefWithRate findUserCardData(@Param("userId") Long userId);
 
+    @Query("SELECT new com.example.career.domain.consult.Dto.UserBriefWithConsult(u, t) " +
+            "FROM TutorDetail t INNER JOIN User u ON t.tutorId = u.id " +
+            "WHERE (t.tutorId = :userId) ")
+    UserBriefWithConsult findUserCardDataUsingConsult(@Param("userId") Long userId);
 
     @Query("SELECT new com.example.career.domain.community.Dto.Brief.UserBriefWithRate(u, t) " +
             "FROM TutorDetail t INNER JOIN User u ON t.tutorId = u.id " +
