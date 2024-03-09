@@ -34,12 +34,17 @@ public class ConsultServiceImpl implements ConsultService{
     private final StudentDetailRepository studentDetailRepository;
     @Override
     public List<UpcomingConsults> getList(User mentor, int status) {
-        List<Consult> consultList = consultRepository.findAllByMentorAndStatus(mentor, status);
-        List<UpcomingConsults> upcomingConsults = new ArrayList<>();
+        List<Consult> consultList;
+
+        if(mentor.getIsTutor()) {
+            consultList = consultRepository.findAllByMentor(mentor);
+        }else {
+            consultList = consultRepository.findAllByMentee(mentor);
+
+        }        List<UpcomingConsults> upcomingConsults = new ArrayList<>();
         for(Consult consult : consultList) {
             UpcomingConsults up = consult.toUpcomingConsult();
             // 학생 정보
-            up.setStudent(consult.getMentee().toConsultMenteeRespDto());
             upcomingConsults.add(up);
         }
 
@@ -50,84 +55,57 @@ public class ConsultServiceImpl implements ConsultService{
     @Override
     public MentorHomeRespDto getMentorHome(User mentor) {
         MentorHomeRespDto mentorHomeRespDto = new MentorHomeRespDto();
-        List<Consult> mentorConsultList = consultRepository.findAllByMentor(mentor);
-        if(mentorConsultList == null & !mentor.getIsTutor()) return null;
+        List<Consult> mentorConsultList;
+        if(mentor.getIsTutor()) {
+            mentorConsultList = consultRepository.findAllByMentor(mentor);
+        }else {
+            mentorConsultList = consultRepository.findAllByMentee(mentor);
+
+        }
+
+        if(mentorConsultList == null) return null;
+
         List<LastUpcomingConsult> lastUpcomingConsults = new ArrayList<>();
         List<UpcomingConsults> upcomingConsults = new ArrayList<>();
         List<PreviousConsult> previousConsults = new ArrayList<>();
+        List<CanceledConsultByMentor> canceledConsultByMentor = new ArrayList<>();
+        List<CanceledConsultByMentee> canceledConsultByMentee = new ArrayList<>();
         for(Consult consult : mentorConsultList) {
-            System.out.println(consult);
             // 예정 상담일 때
             if(consult.getStatus() == 0) {
                 //상담 내용
                 LastUpcomingConsult lastUp = consult.toLastUpcomingConsult();
-                // 학생 정보
-                lastUp.setStudent(consult.getMentee().toConsultMenteeRespDto());
                 lastUpcomingConsults.add(lastUp);
             }
             // 진행 상담일 때
-            if(consult.getStatus() == 1) {
+            else if(consult.getStatus() == 1) {
                 //상담 내용
                 UpcomingConsults up = consult.toUpcomingConsult();
-                // 학생 정보
-                up.setStudent(consult.getMentee().toConsultMenteeRespDto());
                 upcomingConsults.add(up);
             }
-            // 완료 상담일 때 + 취소된 상담
-            if(consult.getStatus() == 2 || consult.getStatus() == 3) {
+            // 완료 상담일 때
+            else if(consult.getStatus() == 2) {
                 //상담 내용
                 PreviousConsult pre = consult.toPreviousConsult();
-                // 학생 정보
-                pre.setStudent(consult.getMentee().toConsultMenteeRespDto());
                 previousConsults.add(pre);
+            }
+            else if(consult.getStatus() == 3) {
+                //상담 내용
+                CanceledConsultByMentor canMenor = consult.toCanceledConsultByMentor();
+                canceledConsultByMentor.add(canMenor);
+            }
+            else if(consult.getStatus() == 4) {
+                //상담 내용
+                CanceledConsultByMentee canMentee = consult.toCanceledConsultByMentee();
+                canceledConsultByMentee.add(canMentee);
             }
         }
 
         mentorHomeRespDto.setLastUpcomingConsult(lastUpcomingConsults);
         mentorHomeRespDto.setUpcomingConsult(upcomingConsults);
         mentorHomeRespDto.setPreviousConsult(previousConsults);
-
-        return mentorHomeRespDto;
-    }
-    @Override
-    public MentorHomeRespDto getMenteeHome(User mentee) {
-        MentorHomeRespDto mentorHomeRespDto = new MentorHomeRespDto();
-        List<Consult> mentorConsultList = consultRepository.findAllByMentee(mentee);
-        if(mentorConsultList == null & mentee.getIsTutor()) return null;
-        List<LastUpcomingConsult> lastUpcomingConsults = new ArrayList<>();
-        List<UpcomingConsults> upcomingConsults = new ArrayList<>();
-        List<PreviousConsult> previousConsults = new ArrayList<>();
-        for(Consult consult : mentorConsultList) {
-            System.out.println(consult);
-            // 예정 상담일 때
-            if(consult.getStatus() == 0) {
-                //상담 내용
-                LastUpcomingConsult lastUp = consult.toLastUpcomingConsult();
-                // 학생 정보
-                lastUp.setMentor((consult.getMentor().toConsultMentorRespDto()));
-                lastUpcomingConsults.add(lastUp);
-            }
-            // 진행 상담일 때
-            if(consult.getStatus() == 1) {
-                //상담 내용
-                UpcomingConsults up = consult.toUpcomingConsult();
-                // 학생 정보
-                up.setMentor(consult.getMentor().toConsultMentorRespDto());
-                upcomingConsults.add(up);
-            }
-            // 완료 상담일 때 + 취소된 상담
-            if(consult.getStatus() == 2 || consult.getStatus() == 3) {
-                //상담 내용
-                PreviousConsult pre = consult.toPreviousConsult();
-                // 학생 정보
-                pre.setMentor(consult.getMentor().toConsultMentorRespDto());
-                previousConsults.add(pre);
-            }
-        }
-
-        mentorHomeRespDto.setLastUpcomingConsult(lastUpcomingConsults);
-        mentorHomeRespDto.setUpcomingConsult(upcomingConsults);
-        mentorHomeRespDto.setPreviousConsult(previousConsults);
+        mentorHomeRespDto.setCanceledConsultByMentor(canceledConsultByMentor);
+        mentorHomeRespDto.setCanceledConsultByMentee(canceledConsultByMentee);
 
         return mentorHomeRespDto;
     }
@@ -212,6 +190,8 @@ public class ConsultServiceImpl implements ConsultService{
     public ResponseEntity<String> updateConsultationStatus() {
         // 현재 시간으로부터 30분 후의 시간 계산
         LocalDateTime thirtyMinutesFromNow = KoreaTime.now().plusMinutes(30);
+        // 현재 시간으로부터 1일 전의 시간 계산
+        LocalDateTime oneDayAgo = KoreaTime.now().minusDays(1);
 
         // status가 0이고, 상담 시작 시간이 현재 시간으로부터 30분 후 이전인 상담 조회
         List<Consult> consultations = consultRepository.findByStatusAndStartTimeBefore(0, thirtyMinutesFromNow);
@@ -222,17 +202,37 @@ public class ConsultServiceImpl implements ConsultService{
         }
         // 조회된 상담들의 상태 업데이트
         consultations.forEach(consult -> {
-            consult.setStatus(4);
+            consult.setStatus(3);
             consult.setReason("멘토가 상담을 수락하지 않았습니다. (시간 초과)");
             consultRepository.save(consult);
         });
-        return  ResponseEntity.ok("Canceled Consultation cuz timeover : "+ consultations.size());
+
+
+        // endTime 기준으로 1일이 지난 상담 조회
+        List<Consult> overdueConsultations = consultRepository.findByStatusAndEndTimeBefore(1, oneDayAgo);
+        System.out.println(overdueConsultations);
+        System.out.println("상담 종료 시간으로부터 1일이 지나 취소된 상담 갯수 : "+ overdueConsultations.size());
+        for(int i=0; i<overdueConsultations.size(); i++) {
+            System.out.println(overdueConsultations.get(i).getId()+" : "+overdueConsultations.get(i).getEndTime());
+        }
+        // 조회된 상담들의 상태 업데이트
+        overdueConsultations.forEach(consult -> {
+            consult.setStatus(3); // 취소된 상태로 업데이트
+            consult.setReason("상담 종료 시간으로부터 1일이 지나 취소되었습니다.");
+            consultRepository.save(consult);
+        });
+
+
+
+
+        return  ResponseEntity.ok("Canceled Consultation cuz timeover : "+ consultations.size()+overdueConsultations.size());
+
     }
 
     @Override
     public ResponseEntity<?> menteeScheduledConsultList(User user) {
         // status가 1인 consult 뽑아오기
-        List<Consult> consultList = consultRepository.findAllByMenteeAndStatus(user, 1);
+        List<Consult> consultList = consultRepository.findAllByMenteeAndStatusAndEndTimeAfter(user, 1, KoreaTime.now());
         if(consultList.size() == 0) return ResponseEntity.badRequest().body("예정된 상담이 존재하지 않습니다.");
         List<UserBriefWithConsult> userBriefWithConsults = new ArrayList<>();
         try {
@@ -248,4 +248,5 @@ public class ConsultServiceImpl implements ConsultService{
         return ResponseEntity.ok(userBriefWithConsults);
 
     }
+
 }
