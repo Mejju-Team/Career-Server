@@ -12,24 +12,21 @@ import org.springframework.transaction.annotation.Transactional;
 public class StudentDetailServiceImpl implements StudentDetailService {
     private final StudentDetailRepository studentDetailRepository;
     @Override
-    @Transactional
     public StudentDetail getStudentDetailByStudentId(Long id) {
         return studentDetailRepository.findByStudentId(id);
     };
 
     @Override
-    @Transactional(isolation = Isolation.SERIALIZABLE)
-    public int updateMyPoint(int delta, Long id) throws Exception {
+    @Transactional
+    public int updateMyPoint(int delta, Long id) {
         StudentDetail studentDetail = studentDetailRepository.findByStudentId(id);
-        int point = studentDetail.getMyPoint();
+        studentDetail.addDelta(delta);
+        return studentDetail.getMyPoint();
+    }
 
-        int nxtPoint = point + delta;
-        if (nxtPoint >= 0) {
-            studentDetail.setMyPoint(nxtPoint);
-            studentDetailRepository.save(studentDetail);
-            return nxtPoint;
-        } else {
-            throw new Exception("포인트가 부족합니다.");
-        }
+    @Override
+    public int getMenteeMyPoint(Long id) {
+        StudentDetail studentDetail = studentDetailRepository.findByStudentId(id);
+        return studentDetail.getMyPoint();
     }
 }
