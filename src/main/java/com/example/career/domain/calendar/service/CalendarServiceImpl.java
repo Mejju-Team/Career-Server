@@ -123,7 +123,7 @@ public class CalendarServiceImpl implements CalendarService{
                 return false;
             }
 
-            consult.setZoomLink(zoomMeetingObjectEntity.getJoin_url());
+            consult.setZoomLink(zoomMeetingObjectEntity.getStart_url());
             consult.setMeetingId(zoomMeetingObjectEntity.getId());
             return true;
         }
