@@ -23,4 +23,5 @@ public class CareerApplication {
                         .allowedMethods("GET", "POST","DELETE");            }
         };
     }
+    
 }
