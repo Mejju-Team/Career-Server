@@ -14,7 +14,6 @@ public class CareerApplication {
     public static void main(String[] args) {
         SpringApplication.run(CareerApplication.class, args);
     }
-
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
