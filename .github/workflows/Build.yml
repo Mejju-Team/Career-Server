@@ -41,40 +41,40 @@ jobs:
           echo "zipStoreBase=GRADLE_USER_HOME" >> ./gradle/wrapper/gradle-wrapper.properties
           echo "zipStorePath=wrapper/dists" >> ./gradle/wrapper/gradle-wrapper.properties
           
-     # IP 추출
-      - name: Get Github Actions IP
-        id: ip
-        uses: haythem/public-ip@v1.2
+     # # IP 추출
+     #  - name: Get Github Actions IP
+     #    id: ip
+     #    uses: haythem/public-ip@v1.2
         
-     # AWS Credencials
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_JM_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_JM_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-2
+     # # AWS Credencials
+     #  - name: Configure AWS Credentials
+     #    uses: aws-actions/configure-aws-credentials@v1
+     #    with:
+     #      aws-access-key-id: ${{ secrets.AWS_JM_ACCESS_KEY_ID }}
+     #      aws-secret-access-key: ${{ secrets.AWS_JM_SECRET_ACCESS_KEY }}
+     #      aws-region: ap-northeast-2
           
-      # RDS 보안그룹 생성
-      - name: Add Github Actions IP to Security group
-        run: |
-          aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 3306 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+     #  # RDS 보안그룹 생성
+     #  - name: Add Github Actions IP to Security group
+     #    run: |
+     #      aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 3306 --cidr ${{ steps.ip.outputs.ipv4 }}/32
           
-      - name: Check Gradle Cache
-        id: cache
-        run: |
-          RESULT=$(curl \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ secrets.TOKEN }}" \
-            "${{ secrets.CACHE_PATH }}-1")
+     #  - name: Check Gradle Cache
+     #    id: cache
+     #    run: |
+     #      RESULT=$(curl \
+     #        -H "Accept: application/vnd.github+json" \
+     #        -H "Authorization: Bearer ${{ secrets.TOKEN }}" \
+     #        "${{ secrets.CACHE_PATH }}-1")
       
-          if [[ $RESULT == *"created_at"* ]]
-          then
-            echo "new=2" >> $GITHUB_OUTPUT
-            echo "old=1" >> $GITHUB_OUTPUT
-          else
-            echo "new=1" >> $GITHUB_OUTPUT
-            echo "old=2" >> $GITHUB_OUTPUT
-          fi
+     #      if [[ $RESULT == *"created_at"* ]]
+     #      then
+     #        echo "new=2" >> $GITHUB_OUTPUT
+     #        echo "old=1" >> $GITHUB_OUTPUT
+     #      else
+     #        echo "new=1" >> $GITHUB_OUTPUT
+     #        echo "old=2" >> $GITHUB_OUTPUT
+     #      fi
       
       - name: Cache Gradle packages
         uses: actions/cache@v3
@@ -111,14 +111,14 @@ jobs:
           SHA_SHORT=${GITHUB_SHA: -5}
           echo "RELEASE_VERSION=$SHA_SHORT" >> $GITHUB_ENV
  
-    # RDS 보안그룹 삭제
-      - name: Remove Github Actions IP From Security Group
-        run: |
-          aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 3306 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+    # # RDS 보안그룹 삭제
+    #   - name: Remove Github Actions IP From Security Group
+    #     run: |
+    #       aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 3306 --cidr ${{ steps.ip.outputs.ipv4 }}/32
       
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v1
+    #   - name: Set up Docker Buildx
+    #     id: buildx
+    #     uses: docker/setup-buildx-action@v1
 
       - name: docker build
         run: |
